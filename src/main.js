@@ -4,6 +4,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import AxiosConfig from "./config/AxiosConfig";
 
 /* 
 FORTAWEASOME CUSTOM
@@ -23,8 +24,17 @@ library.add(fab);
  */
 import "./assets/css/reset.css";
 
+/**
+ * COMPONENTs
+ */
+
+import Loading from "@/components/Loading.vue";
+
+AxiosConfig();
+
 createApp(App)
   .component("fa", FontAwesomeIcon)
+  .component("LoadingView", Loading)
   .use(store)
   .use(router)
   .mount("#app");

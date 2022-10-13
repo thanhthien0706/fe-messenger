@@ -7,7 +7,7 @@ const routes = [
     meta: {
       title: "Ban be",
     },
-    component: () => import("../views/FriendSView.vue"),
+    component: () => import("@/views/FriendsView.vue"),
   },
   {
     path: "/",
@@ -15,7 +15,7 @@ const routes = [
     meta: {
       title: "Trang chu - Tin nhan",
     },
-    component: () => import("../views/HomeView.vue"),
+    component: () => import("@/views/HomeView.vue"),
   },
 ];
 

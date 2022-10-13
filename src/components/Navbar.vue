@@ -40,14 +40,18 @@
       <!-- Chats -->
       <li class="nav-item mt-xl-9">
         <router-link
-          class="nav-link position-relative p-0 py-xl-3 active"
+          class="nav-link position-relative p-0 py-xl-3"
           data-toggle="tab"
           title="Chats"
           role="tab"
           to="/"
+          :class="{ active: $route.name == 'home-page' }"
         >
           <i class="icon-lg fe-message-square"></i>
-          <div class="badge badge-dot badge-primary badge-bottom-center"></div>
+          <div
+            class="badge badge-dot badge-primary badge-bottom-center"
+            v-if="$route.name == 'home-page'"
+          ></div>
         </router-link>
       </li>
 
@@ -59,13 +63,21 @@
           title="Friends"
           role="tab"
           to="/ban-be"
+          :class="{ active: $route.name == 'friends-page' }"
         >
           <i class="icon-lg fe-users"></i>
+          <div
+            class="badge badge-dot badge-primary badge-bottom-center"
+            v-if="$route.name == 'friends-page'"
+          ></div>
         </router-link>
       </li>
 
       <!-- Profile -->
-      <li class="nav-item mt-xl-9 d-none d-xl-block flex-xl-grow-1">
+      <li
+        class="nav-item mt-xl-9 d-none d-xl-block flex-xl-grow-1"
+        @click="changeShowNav(2)"
+      >
         <router-link
           class="nav-link position-relative p-0 py-xl-3"
           data-toggle="tab"
@@ -73,8 +85,13 @@
           title="User"
           role="tab"
           to="/nguoi-dung"
+          :class="{ active: $route.name == 'friends-page' }"
         >
           <i class="icon-lg fe-user"></i>
+          <div
+            class="badge badge-dot badge-primary badge-bottom-center"
+            v-if="$route.name == 'friends-page'"
+          ></div>
         </router-link>
       </li>
 
@@ -111,6 +128,16 @@
 <script>
 export default {
   name: "NavbarComponent",
+  data() {
+    return {
+      indexNav: 0,
+    };
+  },
+  methods: {
+    changeShowNav(index) {
+      this.indexNav = index;
+    },
+  },
 };
 </script>
 

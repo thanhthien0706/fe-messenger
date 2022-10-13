@@ -1,3 +1,18 @@
+<style scoped>
+.formCustomSearch {
+}
+.showDropdown {
+  z-index: 99999;
+  background-color: #edeef6;
+  border-radius: 0.375rem;
+}
+
+.dropdown-item-custom:last-child {
+  margin-bottom: 0 !important;
+  border-radius: 0.375rem;
+}
+</style>
+
 <template>
   <div class="sidebar">
     <div class="tab-content h-100" role="tablist">
@@ -14,21 +29,68 @@
               <!-- Title -->
 
               <!-- Search -->
-              <form class="mb-6">
+              <form class="formCustomSearch mb-6 position-relative">
                 <div class="input-group">
                   <input
                     type="text"
                     class="form-control form-control-lg"
-                    placeholder="Search for messages or users..."
+                    placeholder="Tìm kiếm bằng email hoặc SĐT"
                     aria-label="Search for messages or users..."
+                    @focus="isShowDropdown = true"
+                    @blur="isShowDropdown = false"
+                    v-model="searchText"
+                    @input="handleSearch"
                   />
                   <div class="input-group-append">
                     <button
                       class="btn btn-lg btn-ico btn-secondary btn-minimal"
-                      type="submit"
                     >
                       <i class="fe-search"></i>
                     </button>
+                  </div>
+                </div>
+
+                <div
+                  class="showDropdown py-5 px-4 position-absolute w-100"
+                  v-if="isShowDropdown"
+                >
+                  <div v-if="!isPending">
+                    <ul
+                      class="dropdown-menu-custom d-flex flex-column"
+                      v-if="dataListUsers"
+                    >
+                      <li
+                        class="dropdown-item-custom py-4 px-4 bg-light mb-4"
+                        v-for="item in dataListUsers"
+                        :key="item.id"
+                      >
+                        <div class="innerContent d-flex align-items-center">
+                          <img
+                            :src="item.avatar"
+                            :alt="item.fullName"
+                            class="rounded-circle"
+                            width="50"
+                            height="50"
+                          />
+                          <p
+                            class="textName ml-4 font-weight-bold"
+                            style="flex: 1"
+                          >
+                            {{ item.fullName }}
+                          </p>
+                          <fa
+                            :icon="['fas', 'user-plus']"
+                            class=""
+                            style="cursor: pointer"
+                          />
+                        </div>
+                      </li>
+                    </ul>
+
+                    <p class="text-center" v-else>Không tìm thấy kết quả</p>
+                  </div>
+                  <div class="text-center" v-else>
+                    <LoadingView :isPending="isPending" />
                   </div>
                 </div>
               </form>
@@ -38,8 +100,8 @@
               <button
                 type="button"
                 class="btn btn-lg btn-block btn-secondary d-flex align-items-center mb-6"
-                data-toggle="modal"
-                data-target="#invite-friends"
+                :class="{ active: chooseTab == 'list' }"
+                @click="emitChooseTab('list')"
               >
                 Danh sách kết bạn
                 <i class="fe-user-plus ml-auto"></i>
@@ -49,8 +111,8 @@
               <button
                 type="button"
                 class="btn btn-lg btn-block btn-secondary d-flex align-items-center mb-6"
-                data-toggle="modal"
-                data-target="#invite-friends"
+                :class="{ active: chooseTab == 'group' }"
+                @click="emitChooseTab('group')"
               >
                 Danh sách nhóm
                 <i class="fe-users ml-auto"></i>
@@ -58,7 +120,7 @@
 
               <!-- Friends -->
               <nav class="mb-n6">
-                <div class="mb-6">
+                <div class="mb- 6">
                   <small class="">Bạn bè(20)</small>
                 </div>
 
@@ -516,11 +578,48 @@
 </template>
 
 <script>
+import { FriendService, isPending } from "@/services/FriendService";
+
 export default {
   name: "SidebarHome",
+  setup() {
+    return { isPending };
+  },
+  data() {
+    return {
+      chooseTab: "",
+      isShowDropdown: false,
+      searchText: null,
+      typingTimer: null,
+      doneTypingInterval: 3000,
+      dataListUsers: null,
+    };
+  },
+  mounted() {
+    this.emitChooseTab("list");
+  },
   methods: {
-    test() {
-      console.log("chao ban");
+    emitChooseTab(nameTab) {
+      this.chooseTab = nameTab;
+      this.$emit("onShowTab", this.chooseTab);
+    },
+
+    handleSearch() {
+      clearTimeout(this.typingTimer);
+
+      this.typingTimer = setTimeout(async () => {
+        try {
+          const ref = await FriendService.searchUser(this.searchText);
+
+          if (ref.status && ref.data.length > 0) {
+            this.dataListUsers = ref.data;
+          } else {
+            this.dataListUsers = null;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }, 1200);
     },
   },
 };
