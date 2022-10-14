@@ -5,6 +5,7 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import AxiosConfig from "./config/AxiosConfig";
+import { AuthenService } from "./services/AuthenService";
 
 /* 
 FORTAWEASOME CUSTOM
@@ -31,6 +32,7 @@ import "./assets/css/reset.css";
 import Loading from "@/components/Loading.vue";
 
 AxiosConfig();
+AuthenService.initAuthHeader();
 
 createApp(App)
   .component("fa", FontAwesomeIcon)

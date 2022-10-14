@@ -2,6 +2,22 @@ import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
   {
+    path: "/dang-ki",
+    name: "signup-page",
+    meta: {
+      title: "Đăng kí",
+    },
+    component: () => import("@/views/auth/SignupView.vue"),
+  },
+  {
+    path: "/dang-nhap",
+    name: "signin-page",
+    meta: {
+      title: "Đăng nhập",
+    },
+    component: () => import("@/views/auth/SignInView.vue"),
+  },
+  {
     path: "/ban-be",
     name: "friends-page",
     meta: {

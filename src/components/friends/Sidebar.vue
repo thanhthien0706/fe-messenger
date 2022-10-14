@@ -36,8 +36,6 @@
                     class="form-control form-control-lg"
                     placeholder="Tìm kiếm bằng email hoặc SĐT"
                     aria-label="Search for messages or users..."
-                    @focus="isShowDropdown = true"
-                    @blur="isShowDropdown = false"
                     v-model="searchText"
                     @input="handleSearch"
                   />
@@ -52,7 +50,7 @@
 
                 <div
                   class="showDropdown py-5 px-4 position-absolute w-100"
-                  v-if="isShowDropdown"
+                  v-if="searchText"
                 >
                   <div v-if="!isPending">
                     <ul
@@ -82,6 +80,7 @@
                             :icon="['fas', 'user-plus']"
                             class=""
                             style="cursor: pointer"
+                            @click="handleAddFriend(item.id)"
                           />
                         </div>
                       </li>
@@ -620,6 +619,18 @@ export default {
           console.log(error);
         }
       }, 1200);
+    },
+
+    async handleAddFriend(id) {
+      try {
+        const ref = await FriendService.addFriend({
+          receiver_id: id,
+        });
+
+        console.log(ref);
+      } catch (error) {
+        console.log(error.message);
+      }
     },
   },
 };
