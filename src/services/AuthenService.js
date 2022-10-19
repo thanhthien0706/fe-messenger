@@ -40,6 +40,13 @@ const AuthenService = {
     try {
       const dataRef = await axios.post(`${mailUrl}/signin`, formData);
 
+      if (
+        dataRef.data.status &&
+        dataRef.data.data != null &&
+        dataRef.data.data != ""
+      ) {
+        this.initAuthHeader();
+      }
       return dataRef.data;
     } catch (error) {
       console.log(error.message);

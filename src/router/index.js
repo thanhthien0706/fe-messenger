@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { checkLogin } from "@/middleware/BeginVerify";
 
 const routes = [
   {
@@ -30,6 +31,7 @@ const routes = [
     name: "home-page",
     meta: {
       title: "Trang chu - Tin nhan",
+      middleware: checkLogin,
     },
     component: () => import("@/views/HomeView.vue"),
   },

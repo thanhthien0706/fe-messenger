@@ -161,6 +161,10 @@ export default {
           if (refSignin.status) {
             localStorage.setItem("userToken", refSignin.data);
             AuthenService.initAuthHeader();
+            let refResult = await this.$store.dispatch("getDataUser");
+            if (refResult != null) {
+              this.$router.push({ path: "/" });
+            }
           }
         }
       } catch (error) {
