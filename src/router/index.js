@@ -3,6 +3,17 @@ import { checkLogin } from "@/middleware/BeginVerify";
 
 const routes = [
   {
+    path: "/quen-mat-khau",
+    name: "reset-password-page",
+    meta: {
+      title: "Quên mật khẩu",
+    },
+    beforeEach(to, from) {
+      console.log(to, from);
+    },
+    component: () => import("@/views/auth/ChangePasswordReset.vue"),
+  },
+  {
     path: "/dang-ki",
     name: "signup-page",
     meta: {
@@ -43,7 +54,7 @@ const router = createRouter({
 });
 
 router.afterEach((to) => {
-  document.title = to.meta.title || "Us love";
+  document.title = to.meta.title || "Messenger";
 });
 
 function nextFactory(context, middleware, index) {

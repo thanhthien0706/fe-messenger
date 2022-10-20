@@ -12,15 +12,16 @@
           <p class="text-center mb-6">Chào mừng bạn tới kênh chat</p>
 
           <!-- Form -->
-          <form class="mb-6">
+          <form class="mb-6" @submit.prevent>
             <!-- Email -->
             <div class="form-group">
-              <label for="email" class="sr-only">Email Address</label>
+              <label for="username" class="sr-only">Username</label>
               <input
-                type="email"
+                type="text"
                 class="form-control form-control-lg"
-                id="email"
-                placeholder="Enter your email"
+                id="username"
+                placeholder="Enter username"
+                v-model="dataUser.username"
               />
             </div>
 
@@ -32,6 +33,7 @@
                 class="form-control form-control-lg"
                 id="password"
                 placeholder="Enter your password"
+                v-model="dataUser.password"
               />
             </div>
 
@@ -51,7 +53,12 @@
             </div> -->
 
             <!-- Submit -->
-            <button class="btn btn-lg btn-block btn-primary" type="submit">
+            <button
+              class="btn btn-lg btn-block btn-primary"
+              type="button"
+              :disabled="dataUser.password == '' && dataUser.username == ''"
+              @click="login"
+            >
               Đăng nhập
             </button>
           </form>
@@ -96,21 +103,30 @@
             </div>
             <div class="modal-body">
               <input
-                type="text"
+                type="email"
                 class="form-control"
                 placeholder="Nhập ở đây"
+                v-model="emailReset"
+                v-if="isResetPassword"
               />
+              <p v-else class="text-center">Kiểm tra hộp thư của bạn.</p>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" v-if="isResetPassword">
               <button
                 type="button "
                 class="btn btn-secondary btn-sm"
                 data-bs-dismiss="modal"
+                :disabled="isPending"
               >
                 Đóng
               </button>
-              <button type="button" class="btn btn-primary btn-sm">
-                Xác nhận
+              <button
+                type="button"
+                class="btn btn-primary btn-sm"
+                @click="resetPassword"
+                :disabled="isPending"
+              >
+                {{ isPending ? "Đang xử lý..." : "Xác nhận" }}
               </button>
             </div>
           </div>
@@ -123,8 +139,70 @@
 </template>
 
 <script>
+import { AuthenService, isPending } from "@/services/AuthenService";
+
 export default {
   name: "SigninView",
+  setup() {
+    return { isPending };
+  },
+  data() {
+    return {
+      dataUser: {
+        username: "",
+        password: "",
+      },
+
+      emailReset: "",
+      isResetPassword: true,
+    };
+  },
+  methods: {
+    async login() {
+      if (this.dataUser.username != "" && this.dataUser.password != "") {
+        try {
+          const ref = await AuthenService.signInUser({
+            username: this.dataUser.username,
+            password: this.dataUser.password,
+          });
+
+          if (ref.status) {
+            localStorage.setItem("userToken", ref.data);
+            AuthenService.initAuthHeader();
+            let refResult = await this.$store.dispatch("getDataUser");
+            if (refResult != null) {
+              this.$router.push({ path: "/" });
+            }
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+    },
+
+    async resetPassword() {
+      if (this.emailReset != "") {
+        try {
+          const ref = await AuthenService.resetPassword(this.emailReset);
+          if (ref.status) {
+            this.isResetPassword = false;
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+    },
+  },
+  watch: {
+    isResetPassword(newVal) {
+      if (!newVal) {
+        this.dataUser = {
+          username: "",
+          password: "",
+        };
+      }
+    },
+  },
 };
 </script>
 

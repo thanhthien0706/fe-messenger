@@ -55,6 +55,43 @@ const AuthenService = {
     }
   },
 
+  async resetPassword(email) {
+    isPending.value = true;
+    try {
+      const dataRef = await axios.post(
+        `${mailUrl}/reset-password?email=${email}`
+      );
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      isPending.value = false;
+    }
+  },
+
+  async changePassword(token) {
+    try {
+      const dataRef = await axios.post(
+        `${mailUrl}/changePassword?token=${token}`
+      );
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
+  async savePassword(formData) {
+    isPending.value = true;
+    try {
+      const dataRef = await axios.post(`${mailUrl}/savePassword`, formData);
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      isPending.value = false;
+    }
+  },
+
   // LOGOUT
   logoutAccount() {
     localStorage.removeItem("userToken");
