@@ -33,9 +33,15 @@ const onError = (err) => {
 };
 
 const onNotifiPrivateReceiced = (payload) => {
-  console.log(payload);
-  acceptNotification();
-  showNotification();
+  const bodyPayload = JSON.parse(payload.body);
+  switch (bodyPayload.status) {
+    case "ADDFRIEND":
+      acceptNotification();
+      showNotification();
+      break;
+    case "MESSAGE":
+      break;
+  }
 };
 
 export { WebsocketService, stompClient };

@@ -577,7 +577,6 @@
 </template>
 
 <script>
-import { connect } from "@/config/WebSocker";
 import { FriendService, isPending } from "@/services/FriendService";
 
 export default {
@@ -624,8 +623,6 @@ export default {
 
     async handleAddFriend(id) {
       try {
-        const stompClient = connect();
-        stompClient.send("/app/notifi-addfriend", {});
         const ref = await FriendService.addFriend({
           receiver_id: id,
         });

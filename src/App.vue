@@ -1,10 +1,9 @@
 <template>
-  <button @click="onSocket">Click me!</button>
   <router-view />
 </template>
 
 <script>
-import { WebsocketService, stompClient } from "@/services/WebsocketService";
+import { WebsocketService } from "@/services/WebsocketService";
 import { mapGetters } from "vuex";
 
 export default {
@@ -19,16 +18,16 @@ export default {
       }
     },
 
-    onSocket() {
-      const chatMessage = {
-        receiverId: 13,
-        thumbnail: null,
-        message: "Ban dep gai lam",
-        date: "now",
-      };
+    // onSocket() {
+    //   const chatMessage = {
+    //     receiverId: 13,
+    //     thumbnail: null,
+    //     message: "Ban dep gai lam",
+    //     date: "now",
+    //   };
 
-      stompClient.send("/app/private-notifi", {}, JSON.stringify(chatMessage));
-    },
+    //   stompClient.send("/app/private-notifi", {}, JSON.stringify(chatMessage));
+    // },
   },
   computed: {
     ...mapGetters({

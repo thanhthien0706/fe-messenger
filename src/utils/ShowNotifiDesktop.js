@@ -6,7 +6,8 @@ const acceptNotification = () => {
   }
 };
 
-const showNotification = () => {
+const showNotification = (bodyMessage) => {
+  console.log(bodyMessage);
   let notify;
   if (Notification.permission == "default") {
     alert(
@@ -17,10 +18,10 @@ const showNotification = () => {
   else {
     // Tạo thông báo
     notify = new Notification(
-      "Bạn có một thông báo mới từ Freetuts", // Tiêu đề thông báo
+      "Bạn có một thông báo mới từ Messenger", // Tiêu đề thông báo
       {
-        body: "Freetuts vừa đăng một bài viết mới.", // Nội dung thông báo
-        icon: "https://freetuts.net/public/logo/icon.png", // Hình ảnh
+        body: `${bodyMessage.username} gửi lời mời kết bạn đến bạn`, // Nội dung thông báo
+        icon: bodyMessage.thumbnail, // Hình ảnh
         tag: "https://freetuts.net/", // Đường dẫn
       }
     );
