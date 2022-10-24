@@ -71,7 +71,7 @@ const AuthenService = {
 
   async changePassword(token) {
     try {
-      const dataRef = await axios.post(
+      const dataRef = await axios.get(
         `${mailUrl}/changePassword?token=${token}`
       );
       return dataRef.data;

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <form class="formCustom" @submit.prevent>
+    <form class="formCustom" @submit.prevent v-if="!isSuccessed">
       <div class="form-group">
         <label for="oldPassword">Old password</label>
         <input
@@ -39,25 +39,33 @@
           isDisabled ||
           (this.oldPassword == '' &&
             this.newPassword == '' &&
-            this.confirmPassword == '')
+            this.confirmPassword == '') ||
+          isPending
         "
         @click="handleChangePassword"
       >
-        Đổi mật khẩu
+        {{ isPending ? "Đang xử lý..." : "Đổi mật khẩu" }}
       </button>
     </form>
+    <p v-else class="text-center">Đổi mật khẩu thành công</p>
   </div>
 </template>
 
 <script>
+import { AuthenService, isPending } from "@/services/AuthenService";
+
 export default {
   name: "ChangePasswordReset",
+  setup() {
+    return { isPending };
+  },
   data() {
     return {
       oldPassword: "",
       newPassword: "",
       confirmPassword: "",
       isDisabled: true,
+      isSuccessed: false,
     };
   },
   methods: {
@@ -70,7 +78,32 @@ export default {
       }
     },
 
-    async handleChangePassword() {},
+    async handleChangePassword() {
+      if (this.oldPassword != "" && this.newPassword != "") {
+        const token = this.$route.query.token;
+        try {
+          // const formData = new FormData();
+          // formData.append("oldPassword", this.oldPassword);
+          // formData.append("token", token);
+          // formData.append("newPassword", this.newPassword);
+
+          const ref = await AuthenService.savePassword({
+            oldPassword: this.oldPassword,
+            token: token,
+            newPassword: this.newPassword,
+          });
+
+          if (ref.status) {
+            this.isSuccessed = true;
+            setTimeout(() => {
+              this.$router.push({ name: "signin-page" });
+            }, 3000);
+          }
+        } catch (error) {
+          console.log(error.message);
+        }
+      }
+    },
   },
 };
 </script>

@@ -24,21 +24,8 @@
         </a>
       </li>
 
-      <!-- Create group -->
-      <!-- <li class="nav-item">
-        <a
-          class="nav-link position-relative p-0 py-xl-3"
-          data-toggle="tab"
-          href="#tab-content-create-chat"
-          title="Create chat"
-          role="tab"
-        >
-          <i class="icon-lg fe-edit"></i>
-        </a>
-      </li> -->
-
       <!-- Chats -->
-      <li class="nav-item mt-xl-9">
+      <li class="nav-item">
         <router-link
           class="nav-link position-relative p-0 py-xl-3"
           data-toggle="tab"
@@ -69,6 +56,25 @@
           <div
             class="badge badge-dot badge-primary badge-bottom-center"
             v-if="$route.name == 'friends-page'"
+          ></div>
+        </router-link>
+      </li>
+
+      <!-- Notification -->
+      <li class="nav-item mt-xl-9">
+        <router-link
+          class="nav-link position-relative p-0 py-xl-3"
+          data-toggle="tab"
+          href="#tab-content-create-chat"
+          title="Create chat"
+          role="tab"
+          to="/thong-bao"
+          :class="{ active: $route.name == 'notifi-page' }"
+        >
+          <i class="icon-lg fe-bell"></i>
+          <div
+            class="badge badge-dot badge-primary badge-bottom-center"
+            v-if="$route.name == 'notifi-page'"
           ></div>
         </router-link>
       </li>

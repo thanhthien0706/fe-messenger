@@ -1,15 +1,16 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { checkLogin } from "@/middleware/BeginVerify";
+import { checkLogin, checkEntityResetPassword } from "@/middleware/BeginVerify";
 
 const routes = [
+  /**
+   * @ROUTER_AUTHENTICATION
+   */
   {
     path: "/quen-mat-khau",
     name: "reset-password-page",
     meta: {
       title: "Quên mật khẩu",
-    },
-    beforeEach(to, from) {
-      console.log(to, from);
+      middleware: checkEntityResetPassword,
     },
     component: () => import("@/views/auth/ChangePasswordReset.vue"),
   },
@@ -29,11 +30,25 @@ const routes = [
     },
     component: () => import("@/views/auth/SignInView.vue"),
   },
+
+  /**
+   * @ROUTER_MAIN
+   */
+  {
+    path: "/thong-bao",
+    name: "notifi-page",
+    meta: {
+      title: "Thông báo",
+      middleware: checkLogin,
+    },
+    component: () => import("@/views/NotifiView.vue"),
+  },
   {
     path: "/ban-be",
     name: "friends-page",
     meta: {
       title: "Ban be",
+      middleware: checkLogin,
     },
     component: () => import("@/views/FriendsView.vue"),
   },

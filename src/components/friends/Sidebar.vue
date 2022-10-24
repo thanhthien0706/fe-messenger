@@ -577,6 +577,7 @@
 </template>
 
 <script>
+import { connect } from "@/config/WebSocker";
 import { FriendService, isPending } from "@/services/FriendService";
 
 export default {
@@ -609,7 +610,7 @@ export default {
       this.typingTimer = setTimeout(async () => {
         try {
           const ref = await FriendService.searchUser(this.searchText);
-
+          console.log("Tim Ban", ref.data);
           if (ref.status && ref.data.length > 0) {
             this.dataListUsers = ref.data;
           } else {
@@ -623,6 +624,8 @@ export default {
 
     async handleAddFriend(id) {
       try {
+        const stompClient = connect();
+        stompClient.send("/app/notifi-addfriend", {});
         const ref = await FriendService.addFriend({
           receiver_id: id,
         });

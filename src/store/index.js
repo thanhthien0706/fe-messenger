@@ -4,11 +4,18 @@ import { userService } from "../services/UserService";
 export default createStore({
   state: {
     inforUser: null,
+    stompClient: null,
   },
-  getters: {},
+  getters: {
+    getInforUser: (state) => state.inforUser,
+  },
   mutations: {
     setDataUserCurrent(state, data) {
       state.inforUser = data;
+    },
+
+    setStompClient(state, data) {
+      state.stompClient = data;
     },
   },
   actions: {

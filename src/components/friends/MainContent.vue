@@ -50,7 +50,7 @@
         <!-- Chat: Content-->
         <div class="chat-content px-lg-8">
           <div class="container-xxl py-6F py-lg-6">
-            <MainContentAddfriendVue />
+            <MainContentAddfriendVue v-if="nameTabChoose == 'list'" />
           </div>
         </div>
         <!-- Chat: Content -->
