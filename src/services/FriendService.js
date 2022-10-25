@@ -28,6 +28,16 @@ const FriendService = {
       console.log(error.message);
     }
   },
+
+  async getListNotificalAddFriend() {
+    try {
+      const dataRef = await axios.get(`${mainUrl}/list-addfriend`);
+
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
 };
 
 export { FriendService, isPending };

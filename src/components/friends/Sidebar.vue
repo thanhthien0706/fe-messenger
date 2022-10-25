@@ -578,6 +578,7 @@
 
 <script>
 import { FriendService, isPending } from "@/services/FriendService";
+import { sendNotifiAddFriendByUserName } from "@/services/WebsocketService";
 
 export default {
   name: "SidebarHome",
@@ -626,12 +627,24 @@ export default {
         const ref = await FriendService.addFriend({
           receiver_id: id,
         });
-
-        console.log(ref);
+        if (ref.status) {
+          const formNotifi = {
+            receiverId: id,
+            senderId: this.$store.state.inforUser.id,
+            thumbnail: this.$store.state.inforUser.avatar,
+            message: "Chào bạn cho mình làm quen nhé!",
+            date: "",
+          };
+          sendNotifiAddFriendByUserName(formNotifi);
+        }
       } catch (error) {
         console.log(error.message);
       }
     },
+    // onSocket() {
+
+    //   stompClient.send("/app/private-notifi", {}, JSON.stringify(chatMessage));
+    // },
   },
 };
 </script>

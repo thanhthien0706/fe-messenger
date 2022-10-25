@@ -11,23 +11,11 @@ export default {
     this.nConnect();
   },
   methods: {
-    onConnected() {},
     nConnect() {
       if (this.myInfor) {
         WebsocketService(this.myInfor);
       }
     },
-
-    // onSocket() {
-    //   const chatMessage = {
-    //     receiverId: 13,
-    //     thumbnail: null,
-    //     message: "Ban dep gai lam",
-    //     date: "now",
-    //   };
-
-    //   stompClient.send("/app/private-notifi", {}, JSON.stringify(chatMessage));
-    // },
   },
   computed: {
     ...mapGetters({

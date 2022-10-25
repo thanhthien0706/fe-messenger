@@ -1,4 +1,5 @@
 import { connect } from "@/config/WebSocker";
+import store from "@/store";
 import {
   acceptNotification,
   showNotification,
@@ -37,11 +38,16 @@ const onNotifiPrivateReceiced = (payload) => {
   switch (bodyPayload.status) {
     case "ADDFRIEND":
       acceptNotification();
-      showNotification();
+      showNotification(bodyPayload);
+      store.dispatch("getListNotificalAddFriend");
       break;
     case "MESSAGE":
       break;
   }
 };
 
-export { WebsocketService, stompClient };
+const sendNotifiAddFriendByUserName = (formMessage) => {
+  stompClient.send("/app/private-notifi", {}, JSON.stringify(formMessage));
+};
+
+export { WebsocketService, sendNotifiAddFriendByUserName, stompClient };
