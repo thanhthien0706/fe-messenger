@@ -27,8 +27,18 @@
           </div>
           <div class="col-md-2">
             <div class="box-btn d-flex flex-column justify-content-center">
-              <button class="btn btn-primary">Đồng ý</button>
-              <button class="btn btn-link">Bỏ qua</button>
+              <button
+                class="btn btn-primary"
+                @click="handleAccessAddfriend(item.requester.id, true)"
+              >
+                Đồng ý
+              </button>
+              <button
+                class="btn btn-link"
+                @click="handleAccessAddfriend(item.requester.id, false)"
+              >
+                Bỏ qua
+              </button>
             </div>
           </div>
         </div>
@@ -42,6 +52,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { FriendService } from "@/services/FriendService";
 
 export default {
   name: "MainContentAddfriend",
@@ -54,6 +65,19 @@ export default {
   methods: {
     async onHandleListAddfriend() {
       await this.$store.dispatch("getListNotificalAddFriend");
+    },
+    async handleAccessAddfriend(id, status) {
+      try {
+        const ref = await FriendService.handleAccessAddFriend(id, status);
+
+        if (ref.status) {
+          this.onHandleListAddfriend();
+        }
+
+        console.log(ref);
+      } catch (error) {
+        console.log(error.message);
+      }
     },
   },
   computed: {

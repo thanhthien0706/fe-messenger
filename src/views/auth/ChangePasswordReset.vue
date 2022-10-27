@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <form class="formCustom" @submit.prevent v-if="!isSuccessed">
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="oldPassword">Old password</label>
         <input
           type="password"
@@ -10,7 +10,7 @@
           placeholder="Password"
           v-model="oldPassword"
         />
-      </div>
+      </div> -->
       <div class="form-group">
         <label for="newPassword">New password</label>
         <input
@@ -37,9 +37,7 @@
         class="btn btn-primary text-center"
         :disabled="
           isDisabled ||
-          (this.oldPassword == '' &&
-            this.newPassword == '' &&
-            this.confirmPassword == '') ||
+          (this.newPassword == '' && this.confirmPassword == '') ||
           isPending
         "
         @click="handleChangePassword"
@@ -61,7 +59,6 @@ export default {
   },
   data() {
     return {
-      oldPassword: "",
       newPassword: "",
       confirmPassword: "",
       isDisabled: true,
@@ -79,7 +76,7 @@ export default {
     },
 
     async handleChangePassword() {
-      if (this.oldPassword != "" && this.newPassword != "") {
+      if (this.newPassword != "") {
         const token = this.$route.query.token;
         try {
           // const formData = new FormData();
@@ -88,7 +85,6 @@ export default {
           // formData.append("newPassword", this.newPassword);
 
           const ref = await AuthenService.savePassword({
-            oldPassword: this.oldPassword,
             token: token,
             newPassword: this.newPassword,
           });

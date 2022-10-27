@@ -38,6 +38,18 @@ const FriendService = {
       console.log(error.message);
     }
   },
+
+  async handleAccessAddFriend(idFriend, status) {
+    try {
+      const dataRef = await axios.post(
+        `${mainUrl}/response-addfriend?id-friend=${idFriend}&status=${status}`
+      );
+
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
 };
 
 export { FriendService, isPending };
