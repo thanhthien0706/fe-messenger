@@ -437,11 +437,12 @@
 <script>
 export default {
   name: "SidebarHome",
-  methods: {
-    test() {
-      console.log("chao ban");
-    },
+  data() {
+    return {
+      groupChats: null,
+    };
   },
+  methods: {},
 };
 </script>
 
