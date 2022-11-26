@@ -3,32 +3,21 @@
 </template>
 
 <script>
-import { WebsocketService } from "@/services/WebsocketService";
-import { mapGetters } from "vuex";
-
 export default {
   created() {
-    this.nConnect();
+    this.initDataMe();
   },
   methods: {
-    nConnect() {
-      if (this.myInfor) {
-        WebsocketService(this.myInfor);
+    async initDataMe() {
+      const token = localStorage.getItem("userToken");
+
+      if (token && token !== "" && this.$store.state.inforMe != null) {
+        await this.$store.dispatch("getMe");
       }
     },
   },
-  computed: {
-    ...mapGetters({
-      myInfor: "getInforUser",
-    }),
-  },
-  watch: {
-    myInfor(newVal) {
-      if (newVal) {
-        this.nConnect();
-      }
-    },
-  },
+  computed: {},
+  watch: {},
 };
 </script>
 

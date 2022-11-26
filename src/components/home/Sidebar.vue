@@ -442,6 +442,7 @@ export default {
       groupChats: null,
     };
   },
+  created() {},
   methods: {},
 };
 </script>

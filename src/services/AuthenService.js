@@ -2,6 +2,7 @@ import axios from "axios";
 import { ref } from "vue";
 
 const isPending = ref(null);
+const isPendingForgotPassword = ref(null);
 
 const mailUrl = "/auth";
 
@@ -18,7 +19,7 @@ const AuthenService = {
 
   // reset token
   resetAuthHeader() {
-    localStorage.setItem("loveUseToken", "");
+    localStorage.setItem("userToken", "");
     this.initAuthHeader();
   },
 
@@ -52,6 +53,20 @@ const AuthenService = {
       console.log(error.message);
     } finally {
       isPending.value = false;
+    }
+  },
+
+  async forgotPassword(email) {
+    isPendingForgotPassword.value = true;
+    try {
+      const dataRef = await axios.post(
+        `${mailUrl}/forgot-password?email=${email}`
+      );
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    } finally {
+      isPendingForgotPassword.value = false;
     }
   },
 
@@ -98,4 +113,4 @@ const AuthenService = {
   },
 };
 
-export { AuthenService, isPending };
+export { AuthenService, isPending, isPendingForgotPassword };

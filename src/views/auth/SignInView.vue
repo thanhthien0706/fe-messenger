@@ -15,13 +15,13 @@
           <form class="mb-6" @submit.prevent>
             <!-- Email -->
             <div class="form-group">
-              <label for="username" class="sr-only">Username</label>
+              <label for="emailInput" class="sr-only">Email</label>
               <input
-                type="text"
+                type="email"
                 class="form-control form-control-lg"
-                id="username"
-                placeholder="Enter username"
-                v-model="dataUser.username"
+                id="emailInput"
+                placeholder="Enter email"
+                v-model="dataUser.email"
               />
             </div>
 
@@ -56,8 +56,8 @@
             <button
               class="btn btn-lg btn-block btn-primary"
               type="button"
-              :disabled="dataUser.password == '' && dataUser.username == ''"
-              @click="login"
+              :disabled="dataUser.password == '' && dataUser.email == ''"
+              @click="onHandleSignin"
             >
               Đăng nhập
             </button>
@@ -78,6 +78,8 @@
               <router-link to="/dang-ki">Đăng kí</router-link>.
             </p>
           </div>
+
+          <hr />
         </div>
       </div>
 
@@ -107,26 +109,23 @@
                 class="form-control"
                 placeholder="Nhập ở đây"
                 v-model="emailReset"
-                v-if="isResetPassword"
               />
-              <p v-else class="text-center">Kiểm tra hộp thư của bạn.</p>
+              <!-- <p v-else class="text-center">Kiểm tra hộp thư của bạn.</p> -->
             </div>
-            <div class="modal-footer" v-if="isResetPassword">
+            <div class="modal-footer">
               <button
                 type="button "
                 class="btn btn-secondary btn-sm"
                 data-bs-dismiss="modal"
-                :disabled="isPending"
               >
                 Đóng
               </button>
               <button
                 type="button"
                 class="btn btn-primary btn-sm"
-                @click="resetPassword"
-                :disabled="isPending"
+                @click="forgotPassword"
               >
-                {{ isPending ? "Đang xử lý..." : "Xác nhận" }}
+                {{ isPendingForgotPassword ? "Đang xử lý..." : "Xác nhận" }}
               </button>
             </div>
           </div>
@@ -139,17 +138,20 @@
 </template>
 
 <script>
-import { AuthenService, isPending } from "@/services/AuthenService";
+import {
+  AuthenService,
+  isPendingForgotPassword,
+} from "@/services/AuthenService";
 
 export default {
   name: "SigninView",
   setup() {
-    return { isPending };
+    return { isPendingForgotPassword };
   },
   data() {
     return {
       dataUser: {
-        username: "",
+        email: "",
         password: "",
       },
 
@@ -158,38 +160,38 @@ export default {
     };
   },
   methods: {
-    async login() {
-      if (this.dataUser.username != "" && this.dataUser.password != "") {
-        try {
-          const ref = await AuthenService.signInUser({
-            username: this.dataUser.username,
-            password: this.dataUser.password,
-          });
+    async onHandleSignin() {
+      try {
+        const dataRef = await AuthenService.signInUser({
+          email: this.dataUser.email,
+          password: this.dataUser.password,
+        });
 
-          if (ref.status) {
-            localStorage.setItem("userToken", ref.data);
-            AuthenService.initAuthHeader();
-            let refResult = await this.$store.dispatch("getDataUser");
-            if (refResult != null) {
-              this.$router.push({ path: "/" });
-            }
-          }
-        } catch (error) {
-          console.log(error.message);
+        if (dataRef.status) {
+          localStorage.setItem("userToken", dataRef.data);
+          AuthenService.initAuthHeader();
+          await this.$store.dispatch("getMe");
+          this.$router.push("/");
+        } else {
+          throw new Error("Signin Faild");
         }
+      } catch (error) {
+        console.log(error.message);
       }
     },
 
-    async resetPassword() {
-      if (this.emailReset != "") {
-        try {
-          const ref = await AuthenService.resetPassword(this.emailReset);
-          if (ref.status) {
-            this.isResetPassword = false;
+    async forgotPassword() {
+      try {
+        if (this.emailReset != "" || this.isPendingForgotPassword) {
+          const dataRef = await AuthenService.forgotPassword(this.emailReset);
+          if (dataRef.status) {
+            alert("Kiem tra hop thu cua ban");
+          } else {
+            throw new Error("Forgot Password Failed");
           }
-        } catch (error) {
-          console.log(error.message);
         }
+      } catch (error) {
+        console.log(error.message);
       }
     },
   },

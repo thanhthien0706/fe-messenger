@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="box-content-child"
-    v-if="notifiAddfriend.length != 0 && notifiAddfriend != null"
-  >
-    <h6 class="pb-4">Lời mời kết bạn({{ notifiAddfriend.length }})</h6>
+  <div class="box-content-child">
+    <h6 class="pb-4">Lời mời kết bạn(0)</h6>
     <div class="d-flex flex-column">
       <div class="box">
         <div
@@ -22,68 +19,32 @@
             </div>
           </div>
           <div class="col-md-8">
-            <p class="font-weight-bold mb-2">{{ item.requester.fullName }}</p>
-            <p class="font-weight-nomal">"{{ item.description }}"</p>
+            <p class="font-weight-bold mb-2">Thanh Thien</p>
+            <p class="font-weight-nomal">"thien"</p>
           </div>
           <div class="col-md-2">
             <div class="box-btn d-flex flex-column justify-content-center">
-              <button
-                class="btn btn-primary"
-                @click="handleAccessAddfriend(item.requester.id, true)"
-              >
-                Đồng ý
-              </button>
-              <button
-                class="btn btn-link"
-                @click="handleAccessAddfriend(item.requester.id, false)"
-              >
-                Bỏ qua
-              </button>
+              <button class="btn btn-primary">Đồng ý</button>
+              <button class="btn btn-link">Bỏ qua</button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div v-else>
+  <!-- <div v-else>
     <p class="text-center">Không có lời kết bạn nào</p>
-  </div>
+  </div> -->
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import { FriendService } from "@/services/FriendService";
-
 export default {
   name: "MainContentAddfriend",
   data: () => {
     return {};
   },
-  created() {
-    this.onHandleListAddfriend();
-  },
-  methods: {
-    async onHandleListAddfriend() {
-      await this.$store.dispatch("getListNotificalAddFriend");
-    },
-    async handleAccessAddfriend(id, status) {
-      try {
-        const ref = await FriendService.handleAccessAddFriend(id, status);
-
-        if (ref.status) {
-          this.onHandleListAddfriend();
-        }
-
-        console.log(ref);
-      } catch (error) {
-        console.log(error.message);
-      }
-    },
-  },
-  computed: {
-    ...mapGetters({
-      notifiAddfriend: "getNotifiAddfriends",
-    }),
-  },
+  created() {},
+  methods: {},
+  computed: {},
 };
 </script>

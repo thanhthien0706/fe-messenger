@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <form class="formCustom" @submit.prevent v-if="!isSuccessed">
+    <form class="formCustom" @submit.prevent>
       <!-- <div class="form-group">
         <label for="oldPassword">Old password</label>
         <input
@@ -29,34 +29,27 @@
           id="confirmPassword"
           placeholder="Password"
           v-model="confirmPassword"
-          @input="onDisabled"
         />
       </div>
       <button
         type="submit"
         class="btn btn-primary text-center"
         :disabled="
-          isDisabled ||
-          (this.newPassword == '' && this.confirmPassword == '') ||
-          isPending
+          isDisabled || (this.newPassword == '' && this.confirmPassword == '')
         "
-        @click="handleChangePassword"
       >
-        {{ isPending ? "Đang xử lý..." : "Đổi mật khẩu" }}
+        <!-- @click="handleChangePassword" -->
+        <!-- {{ isPending ? "Đang xử lý..." : "Đổi mật khẩu" }} -->
       </button>
     </form>
-    <p v-else class="text-center">Đổi mật khẩu thành công</p>
+    <!-- <p v-else class="text-center">Đổi mật khẩu thành công</p> -->
   </div>
 </template>
 
 <script>
-import { AuthenService, isPending } from "@/services/AuthenService";
-
 export default {
   name: "ChangePasswordReset",
-  setup() {
-    return { isPending };
-  },
+  setup() {},
   data() {
     return {
       newPassword: "",
@@ -65,42 +58,7 @@ export default {
       isSuccessed: false,
     };
   },
-  methods: {
-    onDisabled() {
-      const result = this.confirmPassword.localeCompare(this.newPassword);
-      if (result == 0) {
-        this.isDisabled = false;
-      } else {
-        this.isDisabled = true;
-      }
-    },
-
-    async handleChangePassword() {
-      if (this.newPassword != "") {
-        const token = this.$route.query.token;
-        try {
-          // const formData = new FormData();
-          // formData.append("oldPassword", this.oldPassword);
-          // formData.append("token", token);
-          // formData.append("newPassword", this.newPassword);
-
-          const ref = await AuthenService.savePassword({
-            token: token,
-            newPassword: this.newPassword,
-          });
-
-          if (ref.status) {
-            this.isSuccessed = true;
-            setTimeout(() => {
-              this.$router.push({ name: "signin-page" });
-            }, 3000);
-          }
-        } catch (error) {
-          console.log(error.message);
-        }
-      }
-    },
-  },
+  methods: {},
 };
 </script>
 

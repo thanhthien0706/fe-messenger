@@ -82,7 +82,7 @@
                 id="password"
                 placeholder="Nhập lại mật khẩu"
                 v-model="confirmPassword"
-                @input="handleConfirmPassword"
+                @input="onHandleComparePassword"
               />
             </div>
 
@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import { AuthenService, isPending } from "@/services/AuthenService";
+import { isPending, AuthenService } from "@/services/AuthenService";
 
 export default {
   name: "SignupView",
@@ -132,9 +132,8 @@ export default {
   },
 
   methods: {
-    handleConfirmPassword() {
-      const result = this.confirmPassword.localeCompare(this.dataUser.password);
-      if (result == 0) {
+    onHandleComparePassword() {
+      if (this.confirmPassword === this.dataUser.password) {
         this.isDisabled = false;
       } else {
         this.isDisabled = true;
@@ -142,33 +141,42 @@ export default {
     },
 
     async onHandleSignup() {
-      const formData = new FormData();
-      formData.append("username", this.dataUser.username);
-      formData.append("fullName", this.dataUser.fullname);
-      formData.append("email", this.dataUser.email);
-      formData.append("phone", this.dataUser.phone);
-      formData.append("password", this.dataUser.password);
-
-      try {
-        const ref = await AuthenService.signUpUser(formData);
-
-        if (ref.status) {
-          const refSignin = await AuthenService.signInUser({
-            username: ref.data.username,
+      if (
+        this.dataUser.username != "" &&
+        this.dataUser.fullname != "" &&
+        this.dataUser.email != "" &&
+        this.dataUser.phone != "" &&
+        this.dataUser.password != ""
+      ) {
+        try {
+          const formData = {
+            username: this.dataUser.username,
+            fullname: this.dataUser.fullname,
+            email: this.dataUser.email,
+            phone: this.dataUser.phone.toString(),
             password: this.dataUser.password,
-          });
+          };
+          const dataRef = await AuthenService.signUpUser(formData);
 
-          if (refSignin.status) {
-            localStorage.setItem("userToken", refSignin.data);
-            AuthenService.initAuthHeader();
-            let refResult = await this.$store.dispatch("getDataUser");
-            if (refResult != null) {
-              this.$router.push({ path: "/" });
+          if (dataRef.status) {
+            const dataRefUser = await AuthenService.signInUser({
+              email: this.dataUser.email,
+              password: this.dataUser.password,
+            });
+
+            if (dataRefUser.status) {
+              localStorage.setItem("userToken", dataRefUser.data);
+              AuthenService.initAuthHeader();
+              await this.$store.dispatch("getMe");
+              this.$router.push("/");
             }
+            throw new Error("Signin False");
+          } else {
+            throw new Error("Signup False");
           }
+        } catch (error) {
+          console.log(error.message);
         }
-      } catch (error) {
-        console.log(error.message);
       }
     },
   },

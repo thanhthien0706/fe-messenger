@@ -1,7 +1,7 @@
 import axios from "axios";
 
 function configAxios() {
-  axios.defaults.baseURL = "http://localhost:8082/api/v1";
+  axios.defaults.baseURL = "http://localhost:3000";
 }
 
 export default configAxios;

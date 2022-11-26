@@ -577,14 +577,9 @@
 </template>
 
 <script>
-import { FriendService, isPending } from "@/services/FriendService";
-import { sendNotifiAddFriendByUserName } from "@/services/WebsocketService";
-
 export default {
   name: "SidebarHome",
-  setup() {
-    return { isPending };
-  },
+  setup() {},
   data() {
     return {
       chooseTab: "",
@@ -601,50 +596,8 @@ export default {
   methods: {
     emitChooseTab(nameTab) {
       this.chooseTab = nameTab;
-      this.$emit("onShowTab", this.chooseTab);
+      // this.$emit("onShowTab", this.chooseTab);
     },
-
-    handleSearch() {
-      clearTimeout(this.typingTimer);
-
-      this.typingTimer = setTimeout(async () => {
-        try {
-          const ref = await FriendService.searchUser(this.searchText);
-          console.log("Tim Ban", ref.data);
-          if (ref.status && ref.data.length > 0) {
-            this.dataListUsers = ref.data;
-          } else {
-            this.dataListUsers = null;
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }, 1200);
-    },
-
-    async handleAddFriend(id) {
-      try {
-        const ref = await FriendService.addFriend({
-          receiver_id: id,
-        });
-        if (ref.status) {
-          const formNotifi = {
-            receiverId: id,
-            senderId: this.$store.state.inforUser.id,
-            thumbnail: this.$store.state.inforUser.avatar,
-            message: "Chào bạn cho mình làm quen nhé!",
-            date: "",
-          };
-          sendNotifiAddFriendByUserName(formNotifi);
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    },
-    // onSocket() {
-
-    //   stompClient.send("/app/private-notifi", {}, JSON.stringify(chatMessage));
-    // },
   },
 };
 </script>
