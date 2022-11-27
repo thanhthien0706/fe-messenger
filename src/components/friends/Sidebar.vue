@@ -596,7 +596,7 @@ export default {
   methods: {
     emitChooseTab(nameTab) {
       this.chooseTab = nameTab;
-      // this.$emit("onShowTab", this.chooseTab);
+      this.$emit("onShowTab", this.chooseTab);
     },
   },
 };
