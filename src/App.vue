@@ -11,7 +11,7 @@ export default {
     async initDataMe() {
       const token = localStorage.getItem("userToken");
 
-      if (token && token !== "" && this.$store.state.inforMe != null) {
+      if (token && token !== "" && this.$store.state.inforMe == null) {
         await this.$store.dispatch("getMe");
       }
     },

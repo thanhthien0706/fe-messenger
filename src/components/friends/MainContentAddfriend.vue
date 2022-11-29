@@ -38,13 +38,36 @@
 </template>
 
 <script>
+import { FriendService } from "@/services/FriendService";
+
 export default {
   name: "MainContentAddfriend",
+  setup() {},
   data: () => {
-    return {};
+    return {
+      notifiAddfriend: null,
+    };
   },
-  created() {},
-  methods: {},
+  created() {
+    this.getAllNotifiFriend;
+  },
+  methods: {
+    async getAllNotifiFriend() {
+      try {
+        const dataRef = await FriendService.getAllNotifiFriend();
+
+        console.log("da vao");
+        if (dataRef.status) {
+          this.notifiAddfriend = dataRef.data;
+          console.log(this.notifiAddfriend);
+        } else {
+          throw new Error("Error Get All Notification Add Friend");
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+  },
   computed: {},
 };
 </script>

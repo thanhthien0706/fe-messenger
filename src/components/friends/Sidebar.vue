@@ -37,7 +37,7 @@
                     placeholder="Tìm kiếm bằng email hoặc SĐT"
                     aria-label="Search for messages or users..."
                     v-model="searchText"
-                    @input="handleSearch"
+                    @input="onSearchUser"
                   />
                   <div class="input-group-append">
                     <button
@@ -60,33 +60,34 @@
                       <li
                         class="dropdown-item-custom py-4 px-4 bg-light mb-4"
                         v-for="item in dataListUsers"
-                        :key="item.id"
+                        :key="item._id"
                       >
                         <div class="innerContent d-flex align-items-center">
                           <img
                             :src="item.avatar"
-                            :alt="item.fullName"
+                            :alt="item.local.fullname"
                             class="rounded-circle"
                             width="50"
                             height="50"
+                            style="object-fit: cover; background-color: #fff"
                           />
                           <p
                             class="textName ml-4 font-weight-bold"
                             style="flex: 1"
                           >
-                            {{ item.fullName }}
+                            {{ item.local.fullname }}
                           </p>
                           <fa
                             :icon="['fas', 'user-plus']"
                             class=""
                             style="cursor: pointer"
-                            @click="handleAddFriend(item.id)"
+                            @click="handleAddFriend(item._id)"
                           />
                         </div>
                       </li>
                     </ul>
 
-                    <p class="text-center" v-else>Không tìm thấy kết quả</p>
+                    <p class="text-center" v-else>Can't found users</p>
                   </div>
                   <div class="text-center" v-else>
                     <LoadingView :isPending="isPending" />
@@ -577,14 +578,19 @@
 </template>
 
 <script>
+import { userService, isPending } from "@/services/UserService";
+import { FriendService } from "@/services/FriendService";
+
 export default {
   name: "SidebarHome",
-  setup() {},
+  setup() {
+    return { isPending };
+  },
   data() {
     return {
       chooseTab: "",
       isShowDropdown: false,
-      searchText: null,
+      searchText: "",
       typingTimer: null,
       doneTypingInterval: 3000,
       dataListUsers: null,
@@ -597,6 +603,45 @@ export default {
     emitChooseTab(nameTab) {
       this.chooseTab = nameTab;
       this.$emit("onShowTab", this.chooseTab);
+    },
+
+    async onSearchUser() {
+      try {
+        clearTimeout(this.typingTimer);
+        this.typingTimer = setTimeout(async () => {
+          const dataRef = await userService.searchUser(this.searchText);
+          console.log(dataRef);
+          if (dataRef.status) {
+            this.dataListUsers = dataRef.data;
+          } else {
+            this.dataListUsers = null;
+            throw new Error("Not Found Data User");
+          }
+        }, 1200);
+      } catch (error) {
+        console.error(error.message);
+      }
+    },
+
+    async handleAddFriend(idFriend) {
+      try {
+        const dataInvitation = {
+          description: `Tôi là ${this.$store.state.inforMe.local.fullname}, muốn kết bạn với bạn`,
+          receiver: idFriend,
+        };
+
+        const dataRef = await FriendService.addFriend(dataInvitation);
+        console.log(dataRef);
+
+        if (dataRef.status) {
+          alert("Send Invitation Friend Successfully");
+        } else {
+          alert("Send Invitation Friend Faild");
+          throw new Error("Not Send Invitation Friend");
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
     },
   },
 };

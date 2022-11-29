@@ -6,22 +6,9 @@ const isPending = ref(null);
 const mainUrl = "/friend";
 
 const FriendService = {
-  async searchUser(textString) {
-    isPending.value = true;
-    try {
-      const dataRef = await axios.get(`${mainUrl}?text_search=${textString}`);
-
-      return dataRef.data;
-    } catch (error) {
-      console.log(error.message);
-    } finally {
-      isPending.value = false;
-    }
-  },
-
   async addFriend(formInfor) {
     try {
-      const dataRef = await axios.post(`${mainUrl}/add-friend`, formInfor);
+      const dataRef = await axios.post(`${mainUrl}/send-invitation`, formInfor);
 
       return dataRef.data;
     } catch (error) {
@@ -30,12 +17,15 @@ const FriendService = {
   },
 
   async getListNotificalAddFriend() {
+    isPending.value = true;
     try {
-      const dataRef = await axios.get(`${mainUrl}/list-addfriend`);
+      const dataRef = await axios.get(`${mainUrl}/all`);
 
       return dataRef.data;
     } catch (error) {
       console.log(error.message);
+    } finally {
+      isPending.value = false;
     }
   },
 
