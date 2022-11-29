@@ -31,9 +31,19 @@ const FriendService = {
 
   async handleAccessAddFriend(idFriend, status) {
     try {
-      const dataRef = await axios.post(
-        `${mainUrl}/response-addfriend?id-friend=${idFriend}&status=${status}`
+      const dataRef = await axios.get(
+        `${mainUrl}/add?id=${idFriend}&status=${status}`
       );
+
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
+  async getListFriends() {
+    try {
+      const dataRef = await axios.get(`${mainUrl}/all-friend`);
 
       return dataRef.data;
     } catch (error) {

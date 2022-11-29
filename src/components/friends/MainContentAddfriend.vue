@@ -1,6 +1,8 @@
 <template>
-  <div class="box-content-child">
-    <h6 class="pb-4">Lời mời kết bạn(0)</h6>
+  <div class="box-content-child" v-if="notifiAddfriend">
+    <h6 class="pb-4">
+      Lời mời kết bạn({{ notifiAddfriend ? notifiAddfriend.length : 0 }})
+    </h6>
     <div class="d-flex flex-column">
       <div class="box">
         <div
@@ -12,29 +14,41 @@
           <div class="col-md-2">
             <div class="d-flex justify-content-center">
               <img
-                :src="item.requester.avatar"
+                :src="item.dataRequester.avatar"
                 class="rounded-circle"
                 style="width: 80px; height: 80px"
               />
             </div>
           </div>
           <div class="col-md-8">
-            <p class="font-weight-bold mb-2">Thanh Thien</p>
-            <p class="font-weight-nomal">"thien"</p>
+            <p class="font-weight-bold mb-2">
+              {{ item.dataRequester.local.fullname }}
+            </p>
+            <p class="font-weight-nomal">"{{ item.description }}"</p>
           </div>
           <div class="col-md-2">
             <div class="box-btn d-flex flex-column justify-content-center">
-              <button class="btn btn-primary">Đồng ý</button>
-              <button class="btn btn-link">Bỏ qua</button>
+              <button
+                class="btn btn-primary"
+                @click="onHandleAddFriend(item.dataRequester._id, true)"
+              >
+                Đồng ý
+              </button>
+              <button
+                class="btn btn-link"
+                @click="onHandleAddFriend(item.dataRequester._id, false)"
+              >
+                Bỏ qua
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- <div v-else>
+  <div v-else>
     <p class="text-center">Không có lời kết bạn nào</p>
-  </div> -->
+  </div>
 </template>
 
 <script>
@@ -49,20 +63,28 @@ export default {
     };
   },
   created() {
-    this.getAllNotifiFriend;
+    this.getAllNotifiFriend();
   },
   methods: {
     async getAllNotifiFriend() {
       try {
-        const dataRef = await FriendService.getAllNotifiFriend();
+        const dataRef = await FriendService.getListNotificalAddFriend();
 
-        console.log("da vao");
-        if (dataRef.status) {
+        if (dataRef && dataRef.status) {
           this.notifiAddfriend = dataRef.data;
-          console.log(this.notifiAddfriend);
         } else {
+          this.notifiAddfriend = null;
           throw new Error("Error Get All Notification Add Friend");
         }
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+
+    async onHandleAddFriend(id, status) {
+      try {
+        await FriendService.handleAccessAddFriend(id, status);
+        this.getAllNotifiFriend();
       } catch (error) {
         console.log(error.message);
       }
