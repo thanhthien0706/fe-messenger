@@ -4,7 +4,7 @@ import { ref } from "vue";
 const isPending = ref(null);
 const isPendingForgotPassword = ref(null);
 
-const mailUrl = "/auth";
+const mainUrl = "/auth";
 
 const AuthenService = {
   // set token in header
@@ -26,7 +26,7 @@ const AuthenService = {
   async signUpUser(formData) {
     isPending.value = true;
     try {
-      const dataRef = await axios.post(`${mailUrl}/signup`, formData);
+      const dataRef = await axios.post(`${mainUrl}/signup`, formData);
 
       return dataRef.data;
     } catch (error) {
@@ -39,7 +39,7 @@ const AuthenService = {
   async signInUser(formData) {
     isPending.value = true;
     try {
-      const dataRef = await axios.post(`${mailUrl}/signin`, formData);
+      const dataRef = await axios.post(`${mainUrl}/signin`, formData);
 
       if (
         dataRef.data.status &&
@@ -60,7 +60,7 @@ const AuthenService = {
     isPendingForgotPassword.value = true;
     try {
       const dataRef = await axios.post(
-        `${mailUrl}/forgot-password?email=${email}`
+        `${mainUrl}/forgot-password?email=${email}`
       );
       return dataRef.data;
     } catch (error) {
@@ -74,7 +74,7 @@ const AuthenService = {
     isPending.value = true;
     try {
       const dataRef = await axios.post(
-        `${mailUrl}/reset-password?email=${email}`
+        `${mainUrl}/reset-password?email=${email}`
       );
       return dataRef.data;
     } catch (error) {
@@ -87,7 +87,7 @@ const AuthenService = {
   async changePassword(token) {
     try {
       const dataRef = await axios.get(
-        `${mailUrl}/changePassword?token=${token}`
+        `${mainUrl}/changePassword?token=${token}`
       );
       return dataRef.data;
     } catch (error) {
@@ -98,7 +98,7 @@ const AuthenService = {
   async savePassword(formData) {
     isPending.value = true;
     try {
-      const dataRef = await axios.post(`${mailUrl}/savePassword`, formData);
+      const dataRef = await axios.post(`${mainUrl}/savePassword`, formData);
       return dataRef.data;
     } catch (error) {
       console.log(error.message);

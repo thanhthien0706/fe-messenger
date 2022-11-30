@@ -4,6 +4,9 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import VueSocketIO from "vue-3-socket.io";
+import SocketIO from "socket.io-client";
+
 import AxiosConfig from "./config/AxiosConfig";
 import { AuthenService } from "./services/AuthenService";
 // import getInforUser from "./base/GetInfoUser";
@@ -40,11 +43,28 @@ AuthenService.initAuthHeader();
  */
 // getInforUser();
 
+/**
+ * SOCKET.IO
+ */
+
+const socketConnection = SocketIO("http://localhost:3000");
+
 createApp(App)
   .component("fa", FontAwesomeIcon)
   .component("LoadingView", Loading)
   .use(store)
   .use(router)
+  .use(
+    new VueSocketIO({
+      debug: true,
+      connection: socketConnection,
+      vuex: {
+        store,
+        actionPrefix: "SOCKET_",
+        mutationPrefix: "SOCKET_",
+      },
+    })
+  )
   .mount("#app");
 
 import "bootstrap/dist/js/bootstrap.js";
