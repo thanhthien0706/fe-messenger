@@ -134,9 +134,11 @@
                 <!-- Chat link -->
                 <a
                   class="text-reset nav-link p-0 mb-6"
-                  href="chat-1.html"
-                  v-for="item in listGroupChats"
-                  :key="item._id"
+                  href="javascript:void(0)"
+                  v-for="(item, index) in listGroupChats"
+                  :key="index"
+                  @click="onHandleShowGroupChat(index)"
+                  :class="{ active: currentTag == index }"
                 >
                   <div class="card card-active-listener">
                     <div class="card-body">
@@ -177,9 +179,13 @@ export default {
   data() {
     return {
       groupChats: null,
+      currentTag: 0,
     };
   },
-  created() {},
+  created() {
+    this.onHandleShowGroupChat(0);
+  },
+
   methods: {
     getInforFriend(item) {
       let src = "";
@@ -198,6 +204,11 @@ export default {
       }
 
       return { src, name };
+    },
+
+    onHandleShowGroupChat(index) {
+      this.currentTag = index;
+      this.$emit("emitIndexGroup", index);
     },
   },
   computed: {

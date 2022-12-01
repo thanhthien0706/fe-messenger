@@ -1,7 +1,11 @@
 <template>
   <LightLayoutVue>
-    <template v-slot:sidebarSlot> <SidebarHome /> </template>
-    <template v-slot:mainContentSlot> <MainContentVue /> </template>
+    <template v-slot:sidebarSlot>
+      <SidebarHome @emitIndexGroup="emitIndexGroup" />
+    </template>
+    <template v-slot:mainContentSlot>
+      <MainContentVue :indexGroup="indexGroup" />
+    </template>
   </LightLayoutVue>
 </template>
 
@@ -16,6 +20,16 @@ export default {
     LightLayoutVue,
     SidebarHome,
     MainContentVue,
+  },
+  data() {
+    return {
+      indexGroup: null,
+    };
+  },
+  methods: {
+    emitIndexGroup(e) {
+      this.indexGroup = e;
+    },
   },
 };
 </script>

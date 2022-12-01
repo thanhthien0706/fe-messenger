@@ -8,6 +8,8 @@ export default createStore({
     inforMe: null,
     listFriends: null,
     listGroupChats: null,
+    groupCurrent: 0,
+    messageCurrent: [],
     stompClient: null,
     notifiAddFriend: null,
   },
@@ -15,6 +17,8 @@ export default createStore({
     getInforMe: (state) => state.inforMe,
     getListFriends: (state) => state.listFriends,
     getListGroupChats: (state) => state.listGroupChats,
+    getGroupCurrent: (state) => state.groupCurrent,
+    getMessageCurrent: (state) => state.messageCurrent,
     getNotifiAddfriends: (state) => state.notifiAddFriend,
   },
   mutations: {
@@ -36,9 +40,22 @@ export default createStore({
     setListGroupChats(state, data) {
       if (data) {
         state.listGroupChats = data;
+        state.groupCurrent = data[0];
       } else {
         state.listGroupChats = null;
       }
+    },
+
+    setGroupCurrent(state, data) {
+      state.groupCurrent = data;
+    },
+
+    setMessageCurrent(state, data) {
+      state.messageCurrent = data;
+    },
+
+    setAddMessageCurrent(state, data) {
+      state.messageCurrent.push(data);
     },
   },
   actions: {
