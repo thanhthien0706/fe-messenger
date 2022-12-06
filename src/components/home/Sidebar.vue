@@ -179,11 +179,11 @@ export default {
   data() {
     return {
       groupChats: null,
-      currentTag: 0,
+      currentTag: null,
     };
   },
   created() {
-    this.onHandleShowGroupChat(0);
+    // this.onHandleShowGroupChat(0);
   },
 
   methods: {
