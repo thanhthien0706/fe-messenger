@@ -1,3 +1,13 @@
+<style lang="scss" scoped>
+.listMenu {
+  .menuItem {
+    &:hover {
+      background-color: #f2f2f2;
+    }
+  }
+}
+</style>
+
 <template>
   <div class="sidebar">
     <div class="tab-content h-100" role="tablist">
@@ -7,130 +17,18 @@
         role="tabpanel"
       >
         <div class="d-flex flex-column h-100">
-          <div class="hide-scrollbar">
+          <!-- hide-scrollbar -->
+          <div class="">
             <div class="container-fluid py-6">
               <!-- Title -->
-              <h2 class="font-bold mb-6">Chats</h2>
+              <h2 class="font-bold mb-6">Tin Nhắn</h2>
               <!-- Title -->
 
-              <!-- Search -->
-              <form class="mb-6">
-                <div class="input-group">
-                  <input
-                    type="text"
-                    class="form-control form-control-lg"
-                    placeholder="Search for messages or users..."
-                    aria-label="Search for messages or users..."
-                  />
-                  <div class="input-group-append">
-                    <button
-                      class="btn btn-lg btn-ico btn-secondary btn-minimal"
-                      type="submit"
-                    >
-                      <i class="fe-search"></i>
-                    </button>
-                  </div>
-                </div>
-              </form>
-              <!-- Search -->
-
-              <!-- Favourites -->
-              <div
-                class="text-center hide-scrollbar d-flex my-7"
-                data-horizontal-scroll=""
-              >
-                <a href="#" class="d-block text-reset mr-7 mr-lg-6">
-                  <div class="avatar avatar-sm avatar-online mb-3">
-                    <img
-                      class="avatar-img"
-                      src="@/assets\images\avatars\2.jpg"
-                      alt="Image Description"
-                    />
-                  </div>
-                  <div class="small">William</div>
-                </a>
-
-                <a href="#" class="d-block text-reset mr-7 mr-lg-6">
-                  <div class="avatar avatar-sm avatar-online mb-3">
-                    <img
-                      class="avatar-img"
-                      src="@/assets\images\avatars\3.jpg"
-                      alt="Image Description"
-                    />
-                  </div>
-                  <div class="small">Simon</div>
-                </a>
-
-                <a href="#" class="d-block text-reset mr-7 mr-lg-6">
-                  <div class="avatar avatar-sm avatar-online mb-3">
-                    <img
-                      class="avatar-img"
-                      src="@/assets\images\avatars\4.jpg"
-                      alt="Image Description"
-                    />
-                  </div>
-                  <div class="small">Thomas</div>
-                </a>
-
-                <a href="#" class="d-block text-reset mr-7 mr-lg-6">
-                  <div class="avatar avatar-sm avatar-online mb-3">
-                    <img
-                      class="avatar-img"
-                      src="@/assets\images\avatars\5.jpg"
-                      alt="Image Description"
-                    />
-                  </div>
-                  <div class="small">Zane</div>
-                </a>
-
-                <a href="#" class="d-block text-reset mr-7 mr-lg-6">
-                  <div class="avatar avatar-sm mb-3">
-                    <img
-                      class="avatar-img"
-                      src="@/assets\images\avatars\6.jpg"
-                      alt="Image Description"
-                    />
-                  </div>
-                  <div class="small">Thomas</div>
-                </a>
-
-                <a href="#" class="d-block text-reset mr-7 mr-lg-6">
-                  <div class="avatar avatar-sm mb-3">
-                    <img
-                      class="avatar-img"
-                      src="@/assets\images\avatars\7.jpg"
-                      alt="Image Description"
-                    />
-                  </div>
-                  <div class="small">William</div>
-                </a>
-
-                <a href="#" class="d-block text-reset mr-7 mr-lg-6">
-                  <div class="avatar avatar-sm mb-3">
-                    <img
-                      class="avatar-img"
-                      src="@/assets\images\avatars\8.jpg"
-                      alt="Image Description"
-                    />
-                  </div>
-                  <div class="small">Simon</div>
-                </a>
-
-                <a href="#" class="d-block text-reset mr-7 mr-lg-6">
-                  <div class="avatar avatar-sm mb-3">
-                    <img
-                      class="avatar-img"
-                      src="@/assets\images\avatars\9.jpg"
-                      alt="Image Description"
-                    />
-                  </div>
-                  <div class="small">Thomas</div>
-                </a>
-              </div>
-              <!-- Favourites -->
-
               <!-- Chats -->
-              <nav class="nav d-block list-discussions-js mb-n6">
+              <nav
+                class="nav d-block list-discussions-js mb-n6"
+                v-if="listGroupChats"
+              >
                 <!-- Chat link -->
                 <a
                   class="text-reset nav-link p-0 mb-6"
@@ -151,10 +49,55 @@
                           />
                         </div>
 
-                        <div class="media-body overflow-hidden">
+                        <div class="media-body">
                           <h6 class="text-truncate mb-0 mr-auto">
-                            {{ getInforFriend(item).name }}
+                            {{ sub_string(getInforFriend(item).name, 20) }}
                           </h6>
+                        </div>
+
+                        <div
+                          class="media-body"
+                          style="
+                            display: flex;
+                            justify-content: flex-end;
+                            position: relative;
+                          "
+                          @click="onHandleShowMenu(index)"
+                        >
+                          <fa
+                            :icon="['fas', 'ellipsis-vertical']"
+                            class=""
+                            style="cursor: pointer"
+                          />
+
+                          <nav
+                            class="listMenu"
+                            style="
+                              position: absolute;
+                              top: 100%;
+                              border: 2px solid #000;
+                              border-radius: 6px;
+                              background-color: #fff;
+                              z-index: 999;
+                            "
+                            v-show="indexDrop == index && statusDrop"
+                          >
+                            <li
+                              class="menuItem"
+                              style="padding: 4px 16px"
+                              @click="
+                                onCreateConversation(
+                                  getInforFriend(item).idUser
+                                )
+                              "
+                              v-if="item.typeConversation == 'single'"
+                            >
+                              Tạo nhóm
+                            </li>
+                            <li class="menuItem" style="padding: 4px 16px">
+                              Rời nhóm
+                            </li>
+                          </nav>
                         </div>
                       </div>
                     </div>
@@ -163,6 +106,8 @@
                 <!-- Chat link -->
               </nav>
               <!-- Chats -->
+
+              <p class="text-center" v-else>Chưa có nhóm chat nào</p>
             </div>
           </div>
         </div>
@@ -173,6 +118,8 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { ConversationService } from "@/services/ConversationService";
+import SubString from "@/utils/SubString";
 
 export default {
   name: "SidebarHome",
@@ -180,6 +127,8 @@ export default {
     return {
       groupChats: null,
       currentTag: null,
+      indexDrop: null,
+      statusDrop: false,
     };
   },
   created() {
@@ -190,6 +139,7 @@ export default {
     getInforFriend(item) {
       let src = "";
       let name = "";
+      let idUser = "";
 
       if (item.typeConversation == "single") {
         const friend = item.dataMembers.filter(
@@ -198,18 +148,54 @@ export default {
 
         src = friend.avatar;
         name = friend.local.fullname;
+        idUser = friend._id;
       } else {
+        console.log(item.dataMembers);
         src = item.avatar;
-        name = item.nameGroup;
+        name = item.nameGroup
+          ? item.nameGroup
+          : this.getNameMember(item.dataMembers);
       }
 
-      return { src, name };
+      return { src, name, idUser };
+    },
+
+    getNameMember(dataMembers) {
+      let name = "";
+
+      dataMembers.forEach((element, index) => {
+        if (index == 0) {
+          name += element.local.fullname;
+        } else {
+          name += "," + element.local.fullname;
+        }
+      });
+      return name;
     },
 
     onHandleShowGroupChat(index) {
       this.currentTag = index;
       this.$emit("emitIndexGroup", index);
     },
+
+    onHandleShowMenu(index) {
+      this.indexDrop = index;
+      this.statusDrop = !this.statusDrop;
+    },
+
+    async onCreateConversation(idUser) {
+      console.log(idUser);
+      try {
+        const dataRef = await ConversationService.createConversation(idUser);
+        if (dataRef.status) {
+          this.$store.commit("addGroupChatToGroups", dataRef.data);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    },
+
+    sub_string: SubString,
   },
   computed: {
     ...mapGetters({

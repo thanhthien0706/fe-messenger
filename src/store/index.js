@@ -46,6 +46,10 @@ export default createStore({
       }
     },
 
+    addGroupChatToGroups(state, data) {
+      state.listGroupChats.push(data);
+    },
+
     setGroupCurrent(state, data) {
       state.groupCurrent = data;
     },

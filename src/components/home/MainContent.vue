@@ -1,5 +1,21 @@
+<style lang="scss" scoped>
+.formCustomSearch {
+}
+.showDropdown {
+  z-index: 99999;
+  background-color: #edeef6;
+  border-radius: 0.375rem;
+}
+
+.dropdown-item-custom:last-child {
+  margin-bottom: 0 !important;
+  border-radius: 0.375rem;
+}
+</style>
+
 <template>
   <!-- Main Content -->
+
   <div
     class="main main-visible"
     data-mobile-height=""
@@ -37,7 +53,7 @@
 
                   <div class="media-body align-self-center text-truncate">
                     <h6 class="text-truncate mb-n1">
-                      {{ getInforFriend(dataGroup).name }}
+                      {{ sub_string(getInforFriend(dataGroup).name, 30) }}
                     </h6>
                     <small class="text-muted"
                       >{{ dataGroup.members.length }} members</small
@@ -61,12 +77,16 @@
                     </a>
                   </li>
 
-                  <li class="nav-item list-inline-item d-none d-xl-block mr-3">
+                  <li
+                    class="nav-item list-inline-item d-none d-xl-block mr-3"
+                    v-if="dataGroup.typeConversation == 'group'"
+                  >
                     <a
                       class="nav-link text-muted px-3"
-                      href="#"
                       data-chat-sidebar-toggle="#chat-1-members"
                       title="Add People"
+                      data-toggle="modal"
+                      data-target="#modalAddUserGroup"
                     >
                       <i class="icon-md fe-user-plus"></i>
                     </a>
@@ -82,50 +102,6 @@
                       <i class="icon-md fe-more-vertical"></i>
                     </a>
                   </li>
-
-                  <!-- Mobile nav -->
-                  <li class="nav-item list-inline-item d-block d-xl-none">
-                    <div class="dropdown">
-                      <a
-                        class="nav-link text-muted px-0"
-                        href="#"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <i class="icon-md fe-more-vertical"></i>
-                      </a>
-                      <div class="dropdown-menu">
-                        <a
-                          class="dropdown-item d-flex align-items-center"
-                          data-toggle="collapse"
-                          data-target="#chat-1-search"
-                          href="#"
-                        >
-                          Search <span class="ml-auto pl-5 fe-search"></span>
-                        </a>
-
-                        <a
-                          class="dropdown-item d-flex align-items-center"
-                          href="#"
-                          data-chat-sidebar-toggle="#chat-1-info"
-                        >
-                          Chat Info
-                          <span class="ml-auto pl-5 fe-more-horizontal"></span>
-                        </a>
-
-                        <a
-                          class="dropdown-item d-flex align-items-center"
-                          href="#"
-                          data-chat-sidebar-toggle="#chat-1-members"
-                        >
-                          Add Members
-                          <span class="ml-auto pl-5 fe-user-plus"></span>
-                        </a>
-                      </div>
-                    </div>
-                  </li>
-                  <!-- Mobile nav -->
                 </ul>
               </div>
             </div>
@@ -293,6 +269,7 @@
                       rows="1"
                       data-emoji-input=""
                       data-autosize="true"
+                      autocomplete="off"
                       v-model="textMess"
                       @keyup.enter="sendMessage('TEXT')"
                     />
@@ -377,12 +354,77 @@
     <!-- Default Page -->
   </div>
   <!-- Main Content -->
+
+  <!-- Modal -->
+  <div class="modal fade" id="modalAddUserGroup">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Thêm bạn</h5>
+        </div>
+        <div class="modal-body">
+          <input
+            type="text"
+            class="form-control mb-5"
+            placeholder="Nhập tên"
+            @input="onSearchFriend"
+          />
+
+          <div>
+            <ul
+              class="dropdown-menu-custom d-flex flex-column"
+              v-if="dataFriendSearch"
+            >
+              <li
+                class="dropdown-item-custom py-4 px-4 bg-light mb-4"
+                v-for="item in dataFriendSearch"
+                :key="item._id"
+              >
+                <div class="innerContent d-flex align-items-center">
+                  <img
+                    :src="item.avatar"
+                    :alt="item.local.fullname"
+                    class="rounded-circle"
+                    width="50"
+                    height="50"
+                    style="object-fit: cover; background-color: #fff"
+                  />
+                  <p class="textName ml-4 font-weight-bold" style="flex: 1">
+                    {{ item.local.fullname }}
+                  </p>
+                  <fa
+                    :icon="['fas', 'user-plus']"
+                    class=""
+                    style="cursor: pointer"
+                    @click="
+                      handleAddUserToGroup({
+                        idUser: item._id,
+                        name: item.local.fullname,
+                      })
+                    "
+                  />
+                </div>
+              </li>
+            </ul>
+            <p class="text-center" v-else>Can't found users</p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
 import { messageService, isPending } from "@/services/MessageService";
 import formatDate from "@/utils/formatDate";
+import SubString from "@/utils/SubString";
+import { ConversationService } from "@/services/ConversationService";
 
 export default {
   name: "MainContentHome",
@@ -413,10 +455,42 @@ export default {
         attachment: null,
         sender: null,
       },
+      dataFriendSearch: null,
     };
   },
   created() {},
   methods: {
+    async handleAddUserToGroup(dataUser) {
+      try {
+        const dataRef = await ConversationService.joinGroup(
+          dataUser.idUser,
+          this.dataGroup._id
+        );
+
+        if (dataRef.status) {
+          alert(`Đã thêm ${dataUser.name} vào nhóm`);
+        }
+      } catch (e) {
+        console.log(e.message);
+      }
+    },
+
+    onSearchFriend(e) {
+      let searchText = e.target.value.toLowerCase();
+      this.dataFriendSearch = this.listFriends.filter((item) => {
+        const textNameItem = item.local.fullname
+          .toLowerCase()
+          .split(" ")
+          .join("");
+
+        return textNameItem.includes(searchText);
+      });
+
+      if (!searchText) {
+        this.dataFriendSearch = null;
+      }
+    },
+
     onChangFile(event) {
       this.fileUpload = event.target.files[0];
       this.dataMess.attachment = event.target.files[0];
@@ -425,6 +499,7 @@ export default {
     getInforFriend(item) {
       let src = "";
       let name = "";
+      let idUser = "";
 
       if (item.typeConversation == "single") {
         const friend = item.dataMembers.filter(
@@ -433,12 +508,28 @@ export default {
 
         src = friend.avatar;
         name = friend.local.fullname;
+        idUser = friend._id;
       } else {
         src = item.avatar;
-        name = item.nameGroup;
+        name = item.nameGroup
+          ? item.nameGroup
+          : this.getNameMember(item.dataMembers);
       }
 
-      return { src, name };
+      return { src, name, idUser };
+    },
+
+    getNameMember(dataMembers) {
+      let name = "";
+
+      dataMembers.forEach((element, index) => {
+        if (index == 0) {
+          name += element.local.fullname;
+        } else {
+          name += "," + element.local.fullname;
+        }
+      });
+      return name;
     },
     getConversation(index) {
       this.dataGroup = this.listGroupChats[index];
@@ -481,10 +572,12 @@ export default {
       this.textMess = "";
     },
     formatDateBasic: formatDate.basicFormat,
+    sub_string: SubString,
   },
   computed: {
     ...mapGetters({
       listGroupChats: "getListGroupChats",
+      listFriends: "getListFriends",
       inforMe: "getInforMe",
     }),
   },

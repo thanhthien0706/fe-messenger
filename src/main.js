@@ -67,4 +67,5 @@ createApp(App)
   )
   .mount("#app");
 
-import "bootstrap/dist/js/bootstrap.js";
+import "jquery/src/jquery.js";
+import "bootstrap/dist/js/bootstrap.min.js";
