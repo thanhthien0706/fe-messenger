@@ -139,7 +139,7 @@
           <div class="container-xxl py-6 py-lg-10">
             <div v-if="!isPending">
               <template v-for="item in dataMessage" :key="item._id">
-                <div v-if="item.sender !== inforMe._id">
+                <div v-if="item.sender !== inforMe._id" class="mb-2">
                   <!-- Message -->
                   <div class="message">
                     <!-- Avatar -->
@@ -202,7 +202,7 @@
                   <!-- Message -->
                 </div>
 
-                <div v-else>
+                <div v-else class="mb-4">
                   <!-- Message -->
                   <div class="message message-right">
                     <!-- Avatar -->
@@ -294,7 +294,7 @@
                       data-emoji-input=""
                       data-autosize="true"
                       v-model="textMess"
-                      @keyup.enter="sendMessage"
+                      @keyup.enter="sendMessage('TEXT')"
                     />
 
                     <!-- Emoji button -->
@@ -344,7 +344,7 @@
                 </div>
 
                 <!-- Submit button -->
-                <div class="col-auto" @keyup.enter="sendMessage">
+                <div class="col-auto" @keyup.enter="sendMessage('TEXT')">
                   <button
                     class="btn btn-ico btn-primary rounded-circle"
                     type="submit"
@@ -397,13 +397,30 @@ export default {
       dataMessage: null,
       textMess: "",
       fileUpload: null,
+      typeMess: [
+        "TEXT",
+        "IMAGE",
+        "VIDEO_CALL",
+        "AUDIO",
+        "VOICE_CALL",
+        "VIDEO_MESS",
+        "VOICE_MESS",
+      ],
+      dataMess: {
+        content: null,
+        type: null,
+        conversation: null,
+        attachment: null,
+        sender: null,
+      },
     };
   },
   created() {},
   methods: {
     onChangFile(event) {
       this.fileUpload = event.target.files[0];
-      console.log(this.fileUpload);
+      this.dataMess.attachment = event.target.files[0];
+      this.sendMessage("IMAGE");
     },
     getInforFriend(item) {
       let src = "";
@@ -425,6 +442,7 @@ export default {
     },
     getConversation(index) {
       this.dataGroup = this.listGroupChats[index];
+      this.dataMess.conversation = this.dataGroup._id;
     },
     async getMessageGroup() {
       try {
@@ -437,29 +455,30 @@ export default {
         console.log(err.message);
       }
     },
-    joinGroupChat(index) {
-      const group = this.listGroupChats[index];
-      this.$socket.emit("groupchat:join", group._id);
+    joinGroupChat() {
+      this.$socket.emit("groupchat:join", this.dataGroup._id);
       this.sockets.subscribe(
-        `serverGroupChat:sendMess-${group._id}`,
+        `serverGroupChat:sendMess-${this.dataGroup._id}`,
         function (data) {
-          console.log(data);
+          this.dataMessage.push(data);
         }
       );
     },
     unsubscribeGroupChat(oldIndex) {
       if (oldIndex) {
-        const group = this.listGroupChats[oldIndex];
-        this.sockets.unsubscribe(`serverGroupChat:sendMess-${group._id}`);
+        const oldGroup = this.listGroupChats[oldIndex];
+        this.sockets.unsubscribe(`serverGroupChat:sendMess-${oldGroup._id}`);
       }
     },
-    sendMessage() {
-      // this.$socket.emit("groupchat:sendMess", {
-      //   content: this.textMess,
-      //   to: this.dataGroup._id,
-      //   from: this.inforMe._id,
-      // });
-      // this.textMess = "";
+    sendMessage(type) {
+      this.dataMess.content = this.textMess;
+      this.dataMess.type = type;
+      this.dataMess.sender = this.inforMe._id;
+
+      this.$socket.emit("groupchat:sendMess", {
+        data: this.dataMess,
+      });
+      this.textMess = "";
     },
     formatDateBasic: formatDate.basicFormat,
   },
@@ -473,7 +492,7 @@ export default {
     indexGroup(newVal, oldVal) {
       this.getConversation(newVal);
       this.getMessageGroup(newVal);
-      this.joinGroupChat(newVal);
+      this.joinGroupChat();
       this.unsubscribeGroupChat(oldVal);
     },
   },
