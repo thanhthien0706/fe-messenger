@@ -11,6 +11,8 @@
     :statueShow="statueShow"
     v-if="statueShow"
     :dataStreamCall="dataStreamCall"
+    :onHandleCloseCall="onHandleCloseCall"
+    @sendCloseCall="sendCloseCall($event)"
   />
 </template>
 
@@ -19,10 +21,17 @@ import Peer from "peerjs";
 
 export default {
   data() {
-    return { statueShow: false, dataStreamCall: null };
+    return {
+      statueShow: false,
+      dataStreamCall: null,
+      onHandleCloseCall: false,
+    };
   },
   created() {
     this.mainInit();
+    this.sockets.subscribe(`serverSendCloseCall`, function () {
+      this.onHandleCloseCall = true;
+    });
   },
   methods: {
     async mainInit() {
@@ -70,6 +79,14 @@ export default {
       peer.on("call", (call) => {
         this.statueShow = true;
         this.dataStreamCall = call;
+      });
+    },
+
+    sendCloseCall(event) {
+      this.statueShow = false;
+      this.$socket.emit("closeCall", {
+        to: event,
+        from: this.$store.state.inforMe._id,
       });
     },
   },

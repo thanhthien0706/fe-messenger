@@ -14,8 +14,10 @@ export default createStore({
     notifiAddFriend: null,
     idPeer: null,
     peerObject: null,
+    connectPeerObject: null,
   },
   getters: {
+    getConnectPeerObject: (state) => state.connectPeerObject,
     getPeerObject: (state) => state.peerObject,
     getInforMe: (state) => state.inforMe,
     getListFriends: (state) => state.listFriends,
@@ -27,6 +29,9 @@ export default createStore({
   },
   mutations: {
     PEER_OBJECT(state, object) {
+      state.peerObject = object;
+    },
+    CONNECT_PEER_OBJECT(state, object) {
       state.peerObject = object;
     },
     PEER_OPEN(state, id) {

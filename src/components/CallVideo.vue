@@ -132,6 +132,7 @@
         <button
           type="button"
           class="btn btn-danger btn-circle btn-md btn-phone"
+          @click="onCallOff"
         >
           <fa
             :icon="['fas', 'phone-slash']"
@@ -150,7 +151,13 @@ import { mapGetters } from "vuex";
 
 export default {
   name: "CallVideoComponent",
-  props: ["typeConversation", "dataPeerId", "statueShow", "dataStreamCall"],
+  props: [
+    "typeConversation",
+    "dataPeerId",
+    "statueShow",
+    "dataStreamCall",
+    "onHandleCloseCall",
+  ],
 
   data() {
     return {
@@ -158,6 +165,8 @@ export default {
       indexTag: null,
       tagVideo: false,
       tagMic: false,
+      streamMe: null,
+      caller: null,
     };
   },
   created() {
@@ -165,16 +174,31 @@ export default {
     this.startCalle();
   },
   methods: {
-    initMain() {
-      //   this.peer = new Peer({});
+    onCallOff() {
+      this.closeAllCall();
+      this.$emit("sendCloseCall", this.dataPeerId[0].idSocket);
+    },
+    closeAllCall() {
+      this.closeStream("streamMe");
+      this.closeStream("streamFriend");
 
+      if (this.caller) {
+        this.caller.close();
+      }
+
+      if (this.dataStreamCall) {
+        this.dataStreamCall.close();
+      }
+    },
+
+    initMain() {
       if (this.typeConversation == "single") {
         const calleUser = this.dataPeerId[0];
 
         this.openStream().then((stream) => {
           this.playStream("streamMe", stream);
-          const call = this.peer.call(calleUser.idPeer, stream);
-          call.on("stream", (remoteStream) =>
+          this.caller = this.peer.call(calleUser.idPeer, stream);
+          this.caller.on("stream", (remoteStream) =>
             this.playStream("streamFriend", remoteStream)
           );
         });
@@ -198,6 +222,16 @@ export default {
       return navigator.mediaDevices.getUserMedia(config);
     },
 
+    closeStream(idVideo) {
+      const video = document.getElementById(idVideo);
+      const stream = video.srcObject;
+      const tracks = stream.getTracks();
+      tracks.forEach(function (track) {
+        track.stop();
+      });
+      video.srcObject = null;
+    },
+
     playStream(idVideoTag, stream) {
       const video = document.getElementById(idVideoTag);
       video.srcObject = stream;
@@ -208,6 +242,14 @@ export default {
     ...mapGetters({
       peer: "getPeerObject",
     }),
+  },
+  watch: {
+    onHandleCloseCall(newVal) {
+      if (newVal) {
+        console.log("da vao dong");
+        this.closeAllCall();
+      }
+    },
   },
 };
 </script>

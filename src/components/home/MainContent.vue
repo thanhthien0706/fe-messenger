@@ -443,6 +443,8 @@
     :statueShow="statueShow"
     :typeConversation="typeConversation"
     :dataPeerId="dataPeerId"
+    :onHandleCloseCall="onHandleCloseCall"
+    @sendCloseCall="sendCloseCall($event)"
     v-if="statueShow"
   />
 </template>
@@ -484,9 +486,10 @@ export default {
         sender: null,
       },
       dataFriendSearch: null,
-      statueShow: true,
+      statueShow: false,
       typeConversation: null,
       dataPeerId: null,
+      onHandleCloseCall: false,
     };
   },
   created() {
@@ -497,9 +500,21 @@ export default {
           this.onStartCall(data);
         }
       );
+
+      this.sockets.subscribe(`serverSendCloseCall`, function () {
+        this.onHandleCloseCall = true;
+      });
     }
   },
   methods: {
+    sendCloseCall(event) {
+      this.statueShow = false;
+      this.$socket.emit("closeCall", {
+        to: event,
+        from: this.$store.state.inforMe._id,
+      });
+    },
+
     onStartCall(data) {
       if (data.length > 0) {
         this.statueShow = true;
