@@ -1,9 +1,26 @@
+<style>
+.boxText {
+  position: fixed;
+  z-index: 99999;
+}
+</style>
+
 <template>
   <router-view />
+  <CallVideoView
+    :statueShow="statueShow"
+    v-if="statueShow"
+    :dataStreamCall="dataStreamCall"
+  />
 </template>
 
 <script>
+import Peer from "peerjs";
+
 export default {
+  data() {
+    return { statueShow: false, dataStreamCall: null };
+  },
   created() {
     this.mainInit();
   },
@@ -12,6 +29,7 @@ export default {
       await this.initDataMe();
       await this.initListFriends();
       await this.initListGroupChats();
+      await this.onConnectPeer();
     },
     async initDataMe() {
       const token = localStorage.getItem("userToken");
@@ -35,6 +53,24 @@ export default {
       if (token && token !== "" && this.$store.state.listGroupChats == null) {
         await this.$store.dispatch("findListGroupChats");
       }
+    },
+
+    async onConnectPeer() {
+      const peer = new Peer({});
+      this.$store.commit("PEER_OBJECT", peer);
+      peer.on("open", (id) => {
+        this.$store.commit("PEER_OPEN", id);
+        this.$socket.emit("clientSubscribePeerId", {
+          idUser: this.$store.state.inforMe._id,
+          idPeer: id,
+        });
+      });
+
+      //Callee
+      peer.on("call", (call) => {
+        this.statueShow = true;
+        this.dataStreamCall = call;
+      });
     },
   },
   computed: {},

@@ -73,7 +73,28 @@
                       href="#"
                       title="Search this chat"
                     >
-                      <i class="icon-md fe-search"></i>
+                      <fa
+                        :icon="['fas', 'phone']"
+                        class=""
+                        style="cursor: pointer"
+                      />
+                    </a>
+                  </li>
+
+                  <li class="nav-item list-inline-item d-none d-xl-block mr-5">
+                    <a
+                      class="nav-link text-muted px-3"
+                      data-toggle="collapse"
+                      data-target="#chat-1-search"
+                      href="javascript:void(0)"
+                      title="Search this chat"
+                      @click="onHandleCaller(dataGroup.members)"
+                    >
+                      <fa
+                        :icon="['fas', 'video-camera']"
+                        class=""
+                        style="cursor: pointer"
+                      />
                     </a>
                   </li>
 
@@ -417,6 +438,13 @@
       </div>
     </div>
   </div>
+
+  <CallVideoView
+    :statueShow="statueShow"
+    :typeConversation="typeConversation"
+    :dataPeerId="dataPeerId"
+    v-if="statueShow"
+  />
 </template>
 
 <script>
@@ -456,10 +484,42 @@ export default {
         sender: null,
       },
       dataFriendSearch: null,
+      statueShow: true,
+      typeConversation: null,
+      dataPeerId: null,
     };
   },
-  created() {},
+  created() {
+    if (this.$store.state.inforMe) {
+      this.sockets.subscribe(
+        `serverSendIdPeers-${this.$store.state.inforMe._id}`,
+        function (data) {
+          this.onStartCall(data);
+        }
+      );
+    }
+  },
   methods: {
+    onStartCall(data) {
+      if (data.length > 0) {
+        this.statueShow = true;
+        this.typeConversation = this.dataGroup.typeConversation;
+        this.dataPeerId = data;
+      } else {
+        alert("Người dùng này hiện không online");
+      }
+    },
+    onHandleCaller(listIdUser) {
+      const idUserNotMe = listIdUser.filter(
+        (item) => item !== this.inforMe._id
+      );
+
+      this.$socket.emit("client:getDataPeerId", {
+        idMe: this.inforMe._id,
+        listIdUser: idUserNotMe,
+      });
+    },
+
     async handleAddUserToGroup(dataUser) {
       try {
         const dataRef = await ConversationService.joinGroup(

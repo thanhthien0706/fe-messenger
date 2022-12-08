@@ -150,7 +150,6 @@ export default {
         name = friend.local.fullname;
         idUser = friend._id;
       } else {
-        console.log(item.dataMembers);
         src = item.avatar;
         name = item.nameGroup
           ? item.nameGroup

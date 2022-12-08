@@ -12,16 +12,26 @@ export default createStore({
     messageCurrent: [],
     stompClient: null,
     notifiAddFriend: null,
+    idPeer: null,
+    peerObject: null,
   },
   getters: {
+    getPeerObject: (state) => state.peerObject,
     getInforMe: (state) => state.inforMe,
     getListFriends: (state) => state.listFriends,
     getListGroupChats: (state) => state.listGroupChats,
     getGroupCurrent: (state) => state.groupCurrent,
     getMessageCurrent: (state) => state.messageCurrent,
     getNotifiAddfriends: (state) => state.notifiAddFriend,
+    getPeerId: (state) => state.idPeer,
   },
   mutations: {
+    PEER_OBJECT(state, object) {
+      state.peerObject = object;
+    },
+    PEER_OPEN(state, id) {
+      state.idPeer = id;
+    },
     setDataMe(state, data) {
       if (data) {
         state.inforMe = data;

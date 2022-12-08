@@ -1,4 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
+import "jquery/src/jquery.js";
+import "bootstrap/dist/js/bootstrap.min.js";
 
 import { createApp } from "vue";
 import App from "./App.vue";
@@ -34,6 +36,7 @@ import "./assets/css/reset.css";
  */
 
 import Loading from "@/components/Loading.vue";
+import CallVideo from "@/components/CallVideo.vue";
 
 AxiosConfig();
 AuthenService.initAuthHeader();
@@ -52,6 +55,7 @@ const socketConnection = SocketIO("http://localhost:3000");
 createApp(App)
   .component("fa", FontAwesomeIcon)
   .component("LoadingView", Loading)
+  .component("CallVideoView", CallVideo)
   .use(store)
   .use(router)
   .use(
@@ -66,6 +70,3 @@ createApp(App)
     })
   )
   .mount("#app");
-
-import "jquery/src/jquery.js";
-import "bootstrap/dist/js/bootstrap.min.js";
