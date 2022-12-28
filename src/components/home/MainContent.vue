@@ -497,13 +497,16 @@ export default {
       this.sockets.subscribe(
         `serverSendIdPeers-${this.$store.state.inforMe._id}`,
         function (data) {
-          this.onStartCall(data);
+          console.log(data);
+          // console.log("Da nhan duoc call");
+          // this.onStartCall(data);
         }
       );
 
-      this.sockets.subscribe(`serverSendCloseCall`, function () {
-        this.onHandleCloseCall = true;
-      });
+      // this.sockets.subscribe(`serverSendCloseCall`, function () {
+      //   console.log("da nhan duoc");
+      //   // this.onHandleCloseCall = true;
+      // });
     }
   },
   methods: {
@@ -525,6 +528,7 @@ export default {
       }
     },
     onHandleCaller(listIdUser) {
+      console.log("Da vao duoc");
       const idUserNotMe = listIdUser.filter(
         (item) => item !== this.inforMe._id
       );
@@ -626,12 +630,13 @@ export default {
       this.sockets.subscribe(
         `serverGroupChat:sendMess-${this.dataGroup._id}`,
         function (data) {
+          console.log("Nhan tin nhan");
           this.dataMessage.push(data);
         }
       );
     },
     unsubscribeGroupChat(oldIndex) {
-      if (oldIndex) {
+      if (oldIndex != null) {
         const oldGroup = this.listGroupChats[oldIndex];
         this.sockets.unsubscribe(`serverGroupChat:sendMess-${oldGroup._id}`);
       }
@@ -660,8 +665,8 @@ export default {
     indexGroup(newVal, oldVal) {
       this.getConversation(newVal);
       this.getMessageGroup(newVal);
-      this.joinGroupChat();
       this.unsubscribeGroupChat(oldVal);
+      this.joinGroupChat();
     },
   },
 };

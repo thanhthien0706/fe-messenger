@@ -29,9 +29,6 @@ export default {
   },
   created() {
     this.mainInit();
-    this.sockets.subscribe(`serverSendCloseCall`, function () {
-      this.onHandleCloseCall = true;
-    });
   },
   methods: {
     async mainInit() {
@@ -79,6 +76,10 @@ export default {
       peer.on("call", (call) => {
         this.statueShow = true;
         this.dataStreamCall = call;
+        this.sockets.subscribe(`serverSendCloseCall`, function () {
+          // this.onHandleCloseCall = true;
+          console.log("da nhan duoc");
+        });
       });
     },
 
