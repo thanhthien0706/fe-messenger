@@ -175,8 +175,12 @@ export default {
   },
   methods: {
     onCallOff() {
+      console.log("Du lieu ne :", this.dataPeerId[0].idSocket);
       this.closeAllCall();
-      this.$emit("sendCloseCall", this.dataPeerId[0].idSocket);
+      this.$socket.emit("closeCall", {
+        to: this.dataPeerId[0].idSocket,
+        from: this.$store.state.inforMe._id,
+      });
     },
     closeAllCall() {
       this.closeStream("streamMe");
@@ -189,6 +193,7 @@ export default {
       if (this.dataStreamCall) {
         this.dataStreamCall.close();
       }
+      this.$emit("sendCloseCall", false);
     },
 
     initMain() {
@@ -245,8 +250,9 @@ export default {
   },
   watch: {
     onHandleCloseCall(newVal) {
+      console.log("Nhan thay thay doi");
       if (newVal) {
-        console.log("da vao dong");
+        console.log("thay doi true");
         this.closeAllCall();
       }
     },

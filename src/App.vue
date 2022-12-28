@@ -13,6 +13,7 @@
     :dataStreamCall="dataStreamCall"
     :onHandleCloseCall="onHandleCloseCall"
     @sendCloseCall="sendCloseCall($event)"
+    ref="callVideoView"
   />
 </template>
 
@@ -29,13 +30,20 @@ export default {
   },
   created() {
     this.mainInit();
+    this.sockets.subscribe(`serverSendCloseCall`, function () {
+      console.log("da nhan duoc o main app");
+      this.$refs.callVideoView.closeAllCall();
+      this.onHandleCloseCall = true;
+    });
   },
   methods: {
     async mainInit() {
       await this.initDataMe();
       await this.initListFriends();
       await this.initListGroupChats();
-      await this.onConnectPeer();
+      if (this.$store.state.inforMe) {
+        await this.onConnectPeer();
+      }
     },
     async initDataMe() {
       const token = localStorage.getItem("userToken");
@@ -76,19 +84,11 @@ export default {
       peer.on("call", (call) => {
         this.statueShow = true;
         this.dataStreamCall = call;
-        this.sockets.subscribe(`serverSendCloseCall`, function () {
-          // this.onHandleCloseCall = true;
-          console.log("da nhan duoc");
-        });
       });
     },
 
     sendCloseCall(event) {
-      this.statueShow = false;
-      this.$socket.emit("closeCall", {
-        to: event,
-        from: this.$store.state.inforMe._id,
-      });
+      this.statueShow = event;
     },
   },
   computed: {},

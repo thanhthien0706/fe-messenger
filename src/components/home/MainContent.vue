@@ -446,6 +446,7 @@
     :onHandleCloseCall="onHandleCloseCall"
     @sendCloseCall="sendCloseCall($event)"
     v-if="statueShow"
+    ref="callVideoViewMain"
   />
 </template>
 
@@ -497,25 +498,26 @@ export default {
       this.sockets.subscribe(
         `serverSendIdPeers-${this.$store.state.inforMe._id}`,
         function (data) {
-          console.log(data);
-          // console.log("Da nhan duoc call");
-          // this.onStartCall(data);
+          console.log("Da nhan duoc call");
+          this.onStartCall(data);
         }
       );
 
-      // this.sockets.subscribe(`serverSendCloseCall`, function () {
-      //   console.log("da nhan duoc");
-      //   // this.onHandleCloseCall = true;
-      // });
+      this.sockets.subscribe(`serverSendCloseCall`, function () {
+        console.log("da nhan duoc");
+        this.$refs.callVideoViewMain.closeAllCall();
+        this.onHandleCloseCall = true;
+      });
     }
+  },
+  beforeUnmount() {
+    this.sockets.unsubscribe(
+      `serverSendIdPeers-${this.$store.state.inforMe._id}`
+    );
   },
   methods: {
     sendCloseCall(event) {
-      this.statueShow = false;
-      this.$socket.emit("closeCall", {
-        to: event,
-        from: this.$store.state.inforMe._id,
-      });
+      this.statueShow = event;
     },
 
     onStartCall(data) {
@@ -528,7 +530,6 @@ export default {
       }
     },
     onHandleCaller(listIdUser) {
-      console.log("Da vao duoc");
       const idUserNotMe = listIdUser.filter(
         (item) => item !== this.inforMe._id
       );
