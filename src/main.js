@@ -51,7 +51,7 @@ AuthenService.initAuthHeader();
  */
 
 // const socketConnection = SocketIO("http://localhost:3000");
-const socketConnection = SocketIO("http://https://api-dacs4.vercel.app/");
+const socketConnection = SocketIO("http://api-chat-dacs4.onrender.com/");
 
 createApp(App)
   .component("fa", FontAwesomeIcon)
