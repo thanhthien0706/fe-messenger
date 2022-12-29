@@ -28,7 +28,7 @@
     "vue": "^3.2.13",
     "vue-3-socket.io": "^1.0.5",
     "vue-peerjs": "^0.3.0",
-    "vue-router": "^4.0.3",
+    "vue-router": "^4.1.6",
     "vuex": "^4.0.0"
   },
   "devDependencies": {

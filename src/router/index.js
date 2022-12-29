@@ -43,15 +43,15 @@ const routes = [
     },
     component: () => import("@/views/NotifiView"),
   },
-  {
-    path: "/ban-be",
-    name: "friends-page",
-    meta: {
-      title: "Ban be",
-      middleware: checkLogin,
-    },
-    component: () => import("@/views/FriendsView"),
-  },
+  // {
+  //   path: "/ban-be",
+  //   name: "friends-page",
+  //   meta: {
+  //     title: "Ban be",
+  //     middleware: checkLogin,
+  //   },
+  //   component: () => import("@/views/FriendsView"),
+  // },
   {
     path: "/",
     name: "home-page",
