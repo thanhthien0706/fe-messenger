@@ -12,7 +12,7 @@ const routes = [
       title: "Quên mật khẩu",
       middleware: checkEntityResetPassword,
     },
-    component: () => import("@/views/auth/ChangePasswordReset.vue"),
+    component: () => import("@/views/auth/ChangePasswordReset"),
   },
   {
     path: "/dang-ki",
@@ -20,7 +20,7 @@ const routes = [
     meta: {
       title: "Đăng kí",
     },
-    component: () => import("@/views/auth/SignupView.vue"),
+    component: () => import("@/views/auth/SignupView"),
   },
   {
     path: "/dang-nhap",
@@ -28,7 +28,7 @@ const routes = [
     meta: {
       title: "Đăng nhập",
     },
-    component: () => import("@/views/auth/SignInView.vue"),
+    component: () => import("@/views/auth/SignInView"),
   },
 
   /**
@@ -41,7 +41,7 @@ const routes = [
       title: "Thông báo",
       middleware: checkLogin,
     },
-    component: () => import("@/views/NotifiView.vue"),
+    component: () => import("@/views/NotifiView"),
   },
   {
     path: "/ban-be",
@@ -50,7 +50,7 @@ const routes = [
       title: "Ban be",
       middleware: checkLogin,
     },
-    component: () => import("@/views/FriendsView.vue"),
+    component: () => import("@/views/FriendsView"),
   },
   {
     path: "/",
@@ -59,7 +59,7 @@ const routes = [
       title: "Trang chu - Tin nhan",
       middleware: checkLogin,
     },
-    component: () => import("@/views/HomeView.vue"),
+    component: () => import("@/views/HomeView"),
   },
 ];
 
