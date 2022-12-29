@@ -50,7 +50,8 @@ AuthenService.initAuthHeader();
  * SOCKET.IO
  */
 
-const socketConnection = SocketIO("http://localhost:3000");
+// const socketConnection = SocketIO("http://localhost:3000");
+const socketConnection = SocketIO("http://https://api-dacs4.vercel.app/");
 
 createApp(App)
   .component("fa", FontAwesomeIcon)
