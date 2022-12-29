@@ -11,6 +11,7 @@
     :statueShow="statueShow"
     v-if="statueShow"
     :dataStreamCall="dataStreamCall"
+    :inforCaller="inforCaller"
     :onHandleCloseCall="onHandleCloseCall"
     @sendCloseCall="sendCloseCall($event)"
     ref="callVideoView"
@@ -26,15 +27,11 @@ export default {
       statueShow: false,
       dataStreamCall: null,
       onHandleCloseCall: false,
+      inforCaller: null,
     };
   },
   created() {
     this.mainInit();
-    this.sockets.subscribe(`serverSendCloseCall`, function () {
-      console.log("da nhan duoc o main app");
-      this.$refs.callVideoView.closeAllCall();
-      this.onHandleCloseCall = true;
-    });
   },
   methods: {
     async mainInit() {

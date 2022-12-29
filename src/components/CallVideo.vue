@@ -107,7 +107,7 @@
           type="button"
           class="btn btn-primary btn-circle btn-md mr-5 btn-video"
           :class="{ activeTag: tagVideo }"
-          @click="tagVideo = !tagVideo"
+          @click="pauseStreamVideo('streamMe')"
         >
           <fa
             :icon="['fas', 'video-slash']"
@@ -120,7 +120,7 @@
           type="button"
           class="btn btn-warning btn-circle btn-md mr-5 btn-mic"
           :class="{ activeTag: tagMic }"
-          @click="tagMic = !tagMic"
+          @click="pauseStreamAudio('streamMe')"
         >
           <fa
             :icon="['fas', 'microphone-slash']"
@@ -154,6 +154,7 @@ export default {
   props: [
     "typeConversation",
     "dataPeerId",
+    "inforCaller",
     "statueShow",
     "dataStreamCall",
     "onHandleCloseCall",
@@ -175,12 +176,7 @@ export default {
   },
   methods: {
     onCallOff() {
-      console.log("Du lieu ne :", this.dataPeerId[0].idSocket);
       this.closeAllCall();
-      this.$socket.emit("closeCall", {
-        to: this.dataPeerId[0].idSocket,
-        from: this.$store.state.inforMe._id,
-      });
     },
     closeAllCall() {
       this.closeStream("streamMe");
@@ -215,9 +211,10 @@ export default {
         this.openStream().then((stream) => {
           this.dataStreamCall.answer(stream);
           this.playStream("streamMe", stream);
-          this.dataStreamCall.on("stream", (remoteStream) =>
-            this.playStream("streamFriend", remoteStream)
-          );
+          this.dataStreamCall.on("stream", (remoteStream) => {
+            console.log(remoteStream);
+            this.playStream("streamFriend", remoteStream);
+          });
         });
       }
     },
@@ -237,10 +234,50 @@ export default {
       video.srcObject = null;
     },
 
+    pauseStreamVideo(idVideo) {
+      this.tagVideo = !this.tagVideo;
+      const video = document.getElementById(idVideo);
+      const stream = video.srcObject;
+      var tracks = stream.getTracks();
+
+      const myVideo = tracks.filter((track) => track.kind === "video")[0];
+
+      if (this.tagVideo) {
+        myVideo.enabled = false;
+      } else {
+        myVideo.enabled = true;
+      }
+    },
+
+    pauseStreamAudio(idVideo) {
+      this.tagMic = !this.tagMic;
+      const video = document.getElementById(idVideo);
+      const stream = video.srcObject;
+      var tracks = stream.getTracks();
+
+      const myAudio = tracks.filter((track) => track.kind === "audio")[0];
+
+      if (this.tagMic) {
+        myAudio.enabled = false;
+      } else {
+        myAudio.enabled = true;
+      }
+    },
+
+    checkVideoEnded(video) {
+      if (video.ended) {
+        console.log("Video stream has ended");
+      } else {
+        console.log("Video stream khong dung");
+        setTimeout(this.checkVideoEnded, 500);
+      }
+    },
+
     playStream(idVideoTag, stream) {
       const video = document.getElementById(idVideoTag);
       video.srcObject = stream;
       video.play();
+      video.addEventListener("timeupdate", this.checkVideoEnded(video));
     },
   },
   computed: {
@@ -250,7 +287,6 @@ export default {
   },
   watch: {
     onHandleCloseCall(newVal) {
-      console.log("Nhan thay thay doi");
       if (newVal) {
         console.log("thay doi true");
         this.closeAllCall();

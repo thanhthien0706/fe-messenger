@@ -498,16 +498,10 @@ export default {
       this.sockets.subscribe(
         `serverSendIdPeers-${this.$store.state.inforMe._id}`,
         function (data) {
-          console.log("Da nhan duoc call");
+          console.log(data);
           this.onStartCall(data);
         }
       );
-
-      this.sockets.subscribe(`serverSendCloseCall`, function () {
-        console.log("da nhan duoc");
-        this.$refs.callVideoViewMain.closeAllCall();
-        this.onHandleCloseCall = true;
-      });
     }
   },
   beforeUnmount() {
