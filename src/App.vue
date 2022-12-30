@@ -96,3 +96,4 @@ export default {
 <style lang="scss">
 @import "~bootstrap/dist/css/bootstrap.css";
 </style>
+<style lang="scss" src="@/assets/style/main.scss"></style>

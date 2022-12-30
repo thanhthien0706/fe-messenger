@@ -28,9 +28,6 @@
       <li class="nav-item">
         <router-link
           class="nav-link position-relative p-0 py-xl-3"
-          data-toggle="tab"
-          title="Chats"
-          role="tab"
           to="/"
           :class="{ active: $route.name == 'home-page' }"
         >
@@ -46,9 +43,6 @@
       <li class="nav-item mt-xl-9">
         <router-link
           class="nav-link position-relative p-0 py-xl-3"
-          data-toggle="tab"
-          title="Friends"
-          role="tab"
           to="/ban-be"
           :class="{ active: $route.name == 'friends-page' }"
         >
@@ -64,10 +58,6 @@
       <li class="nav-item mt-xl-9">
         <router-link
           class="nav-link position-relative p-0 py-xl-3"
-          data-toggle="tab"
-          href="#tab-content-create-chat"
-          title="Create chat"
-          role="tab"
           to="/thong-bao"
           :class="{ active: $route.name == 'notifi-page' }"
         >
@@ -79,6 +69,21 @@
         </router-link>
       </li>
 
+      <!-- Todo List -->
+      <li class="nav-item mt-xl-9">
+        <router-link
+          class="nav-link position-relative p-0 py-xl-3"
+          to="/cong-viec"
+          :class="{ active: $route.name == 'todo-page' }"
+        >
+          <i class="icon-lg fe-list"></i>
+          <div
+            class="badge badge-dot badge-primary badge-bottom-center"
+            v-if="$route.name == 'todo-page'"
+          ></div>
+        </router-link>
+      </li>
+
       <!-- Profile -->
       <li
         class="nav-item mt-xl-9 d-none d-xl-block flex-xl-grow-1"
@@ -86,10 +91,6 @@
       >
         <router-link
           class="nav-link position-relative p-0 py-xl-3"
-          data-toggle="tab"
-          href="#tab-content-user"
-          title="User"
-          role="tab"
           to="/nguoi-dung"
           :class="{ active: $route.name == 'friends-page' }"
         >

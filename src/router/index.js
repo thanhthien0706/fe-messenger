@@ -35,6 +35,15 @@ const routes = [
    * @ROUTER_MAIN
    */
   {
+    path: "/cong-viec",
+    name: "todo-page",
+    meta: {
+      title: "Danh sách công việc",
+      middleware: checkLogin,
+    },
+    component: () => import("@/views/TodoView"),
+  },
+  {
     path: "/thong-bao",
     name: "notifi-page",
     meta: {
@@ -43,15 +52,15 @@ const routes = [
     },
     component: () => import("@/views/NotifiView"),
   },
-  // {
-  //   path: "/ban-be",
-  //   name: "friends-page",
-  //   meta: {
-  //     title: "Ban be",
-  //     middleware: checkLogin,
-  //   },
-  //   component: () => import("@/views/FriendsView"),
-  // },
+  {
+    path: "/ban-be",
+    name: "friends-page",
+    meta: {
+      title: "Ban be",
+      middleware: checkLogin,
+    },
+    component: () => import("@/views/FriendsView"),
+  },
   {
     path: "/",
     name: "home-page",

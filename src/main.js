@@ -50,8 +50,8 @@ AuthenService.initAuthHeader();
  * SOCKET.IO
  */
 
-// const socketConnection = SocketIO("http://localhost:3000");
-const socketConnection = SocketIO("http://api-chat-dacs4.onrender.com/");
+const socketConnection = SocketIO("http://localhost:3000");
+// const socketConnection = SocketIO("http://api-chat-dacs4.onrender.com/");
 
 createApp(App)
   .component("fa", FontAwesomeIcon)
