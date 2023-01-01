@@ -38,6 +38,29 @@ const TaskService = {
       console.log(error.message);
     }
   },
+
+  async createTask(formTask) {
+    try {
+      const dataRef = await axios.post(`${mainUrl}/task-create`, formTask);
+
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
+  async updateTask(updateTask) {
+    try {
+      const dataRef = await axios.put(
+        `${mainUrl}/update/${updateTask.idTask}`,
+        updateTask
+      );
+
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
 };
 
 export { TaskService, isPending };

@@ -19,14 +19,14 @@
           class="item d-flex align-items-center justify-content-between"
           v-for="task in taskFalse"
           :key="task._id"
-          @click="onClickItem"
+          @click="onClickItem(task)"
         >
           <div class="boxRight d-flex align-items-center">
             <fa :icon="['fas', 'circle']" class="iconCheck" />
             <div class="contentInner">
               <p class="textItem">{{ task.name }}</p>
               <p class="timeDealine" v-if="task.dueDate">
-                {{ formatDateBasic(task.dueDate, "dd-MM-yyyy") }}
+                {{ formatDateBasic(task.dueDate, "DD-MM-yyyy") }}
               </p>
             </div>
           </div>
@@ -55,14 +55,14 @@
           class="item d-flex align-items-center justify-content-between"
           v-for="task in taskTrue"
           :key="task._id"
-          @click="onClickItem"
+          @click="onClickItem(task)"
         >
           <div class="boxRight d-flex align-items-center">
             <fa :icon="['fas', 'circle']" class="iconCheck" />
             <div class="contentInner">
               <del class="textItem">{{ task.name }}</del>
               <del class="timeDealine" v-if="task.dueDate">
-                {{ formatDateBasic(task.dueDate, "dd-MM-yyyy") }}
+                {{ formatDateBasic(task.dueDate, "DD-MM-yyyy") }}
               </del>
             </div>
           </div>
@@ -86,6 +86,9 @@
     :dataTask="dataTask"
     :action="action"
     @onClose="onClose"
+    @onHandleTask="onHandleTask"
+    :memberWork="inforWork.members"
+    :nameWork="inforWork.name"
   />
 </template>
 
@@ -102,8 +105,10 @@ export default {
   data() {
     return {
       dataTask: {
+        idTask: "",
         name: "",
         description: "",
+        completed: null,
         dueDate: "",
         worker: "",
       },
@@ -117,7 +122,7 @@ export default {
     };
   },
   methods: {
-    onClickItem() {
+    onClickItem(task) {
       this.clicks++;
       if (this.clicks === 1) {
         this.timer = setTimeout(() => {
@@ -126,14 +131,63 @@ export default {
         }, this.delay);
       } else {
         clearTimeout(this.timer);
-        console.log("Click 2 lan");
+
+        this.onShowHandleTask(task, "edit");
+
         this.clicks = 0;
       }
     },
 
+    async onHandleTask() {
+      try {
+        if (this.action == "add") {
+          const dataRef = await TaskService.createTask({
+            idListTask: this.inforWork._id,
+            name: this.dataTask.name,
+            description: this.dataTask.description,
+            dueDate: this.dataTask.dueDate,
+            worker: this.dataTask.worker,
+          });
+          if (dataRef.status) {
+            this.taskFalse.push(dataRef.data);
+          }
+        } else if (this.action == "edit") {
+          const dataRef = await TaskService.updateTask(this.dataTask);
+          if (dataRef.status) {
+            let indexOld = null;
+
+            console.log(dataRef.data);
+
+            if (dataRef.data.completed) {
+              console.log("vao true");
+              indexOld = this.taskTrue.findIndex(
+                (task) => task._id == dataRef.data.idTask
+              );
+              this.taskTrue[indexOld] = dataRef.data;
+            } else {
+              indexOld = this.taskFalse.findIndex(
+                (task) => task._id == dataRef.data.idTask
+              );
+
+              this.taskFalse[indexOld] = dataRef.data;
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      await this.onClose();
+    },
     onShowHandleTask(task, action) {
       if (task) {
-        this.dataTask = task;
+        this.dataTask.idTask = task._id;
+        this.dataTask.completed = task.completed;
+        this.dataTask.description = task.description;
+        if (task.dueDate) {
+          this.dataTask.dueDate = task.dueDate;
+        }
+        this.dataTask.name = task.name;
+        this.dataTask.worker = task.worker;
       }
 
       this.action = action;
@@ -142,6 +196,8 @@ export default {
     },
 
     onClose() {
+      this.dataTask.completed = null;
+      this.dataTask.idTask = "";
       this.dataTask.description = "";
       this.dataTask.name = "";
       this.dataTask.name = "";

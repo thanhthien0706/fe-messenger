@@ -4,7 +4,9 @@
   <div class="boxHandleTask" v-if="showHandleTask" @click.self="onClose">
     <div class="boxInnercontent">
       <h3>
-        {{ action == "add" ? "Thêm Việc" : "Sửa Việc" }}
+        {{
+          action == "add" ? "Thêm việc - " + nameWork : "Sửa Việc - " + nameWork
+        }}
       </h3>
 
       <form @submit.prevent class="formTask">
@@ -25,7 +27,15 @@
             id="inputWorkerTask"
             v-model="dataTask.worker"
           >
-            <option>Thanh Thien</option>
+            <option
+              v-for="user in memberWork"
+              :key="user"
+              :value="getInforUserById(user)._id"
+              :selected="dataTask.worker == user"
+            >
+              {{ getInforUserById(user).local.fullname }} -
+              {{ getInforUserById(user).username }}
+            </option>
           </select>
         </div>
 
@@ -47,10 +57,15 @@
             id="inputDueDateTask"
             v-model="dataTask.dueDate"
           />
+          <!-- v-model="dataTask.dueDate" -->
         </div>
 
         <div class="form-group text-center">
-          <button type="submit" class="btn btn-primary">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            @click="onEmitHandleTask"
+          >
             {{ action == "add" ? "Thêm" : "Sửa" }}
           </button>
         </div>
@@ -60,13 +75,35 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "PageHandleTask",
-  props: ["showHandleTask", "dataTask", "action"],
+  props: ["showHandleTask", "dataTask", "action", "memberWork", "nameWork"],
+  data() {
+    return {};
+  },
   methods: {
     onClose() {
       this.$emit("onClose");
     },
+
+    onEmitHandleTask() {
+      this.$emit("onHandleTask");
+    },
+
+    getInforUserById(id) {
+      if (id == this.inforMe._id) {
+        return this.inforMe;
+      } else {
+        const inforUser = this.friends.filter((friend) => friend._id == id);
+        return inforUser[0];
+      }
+    },
+  },
+
+  computed: {
+    ...mapGetters({ friends: "getListFriends", inforMe: "getInforMe" }),
   },
 };
 </script>
