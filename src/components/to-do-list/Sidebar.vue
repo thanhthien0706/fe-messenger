@@ -27,7 +27,12 @@
 
       <div class="boxContentTodo" v-if="chooseTab != 'addTodo'">
         <ul class="list-to-do">
-          <li class="item-to-do" v-for="task in dataListTaks" :key="task._id">
+          <li
+            class="item-to-do"
+            v-for="task in dataListTaks"
+            :key="task._id"
+            @click="onShowListTask(task)"
+          >
             <p class="textName">{{ task.name }}</p>
             <p class="countList">({{ task.listTasks.length }})</p>
           </li>
@@ -59,7 +64,7 @@
             </select>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" v-if="dataCreateTodo.type == 'group'">
             <label for="inputMemberTodo">Thành viên</label>
             <div class="boxShowAddMember">
               <ul class="listShowMember">
@@ -148,6 +153,7 @@ export default {
   },
   mounted() {
     this.emitChooseTab("single");
+    this.dataCreateTodo.members.push(this.inforMe._id);
   },
   methods: {
     emitChooseTab(nameTab) {
@@ -199,10 +205,15 @@ export default {
 
         if (dataRef.status) {
           this.dataListTaks = dataRef.data;
+          this.onShowListTask(this.dataListTaks[0]);
         }
       } catch (error) {
         console.log(error);
       }
+    },
+
+    onShowListTask(work) {
+      this.$emit("onEmitInforWork", work);
     },
   },
   computed: {
@@ -215,5 +226,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

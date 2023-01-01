@@ -1,10 +1,16 @@
 <template>
   <LightLayoutVue>
     <template v-slot:sidebarSlot>
-      <SidebarTodoList @onShowTab="onShowTab" />
+      <SidebarTodoList
+        @onShowTab="onShowTab"
+        @onEmitInforWork="onEmitInforWork"
+      />
     </template>
     <template v-slot:mainContentSlot>
-      <MainContentTodoList :nameTabChoose="nameTabChoose" />
+      <MainContentTodoList
+        :nameTabChoose="nameTabChoose"
+        :inforWork="inforWork"
+      />
     </template>
   </LightLayoutVue>
 </template>
@@ -20,11 +26,16 @@ export default {
   data() {
     return {
       nameTabChoose: "",
+      inforWork: null,
     };
   },
   methods: {
     onShowTab(tabName) {
       this.nameTabChoose = tabName;
+    },
+
+    onEmitInforWork(work) {
+      this.inforWork = work;
     },
   },
 };

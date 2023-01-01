@@ -1,0 +1,68 @@
+.mainContentTodoCustom {
+  padding: 10px 24px;
+
+  .btnAddTag {
+    padding: 4px 10px;
+    font-size: 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: all 0.4s;
+    background-color: #cbd0e5;
+
+    &:hover {
+      box-shadow: -5px 5px 10px rgba($color: #000000, $alpha: 0.4);
+    }
+  }
+
+  .boxContentListTask {
+    .boxHeaderItem {
+    }
+
+    .listItems {
+      .item {
+        background-color: rgb(199 196 196 / 20%);
+        border-top: 1px dashed rgba($color: #000000, $alpha: 0.2);
+        padding: 10px 16px;
+        cursor: pointer;
+        transition: all 0.4s;
+        font-size: 18px;
+        font-weight: bold;
+
+        &:hover {
+          background-color: rgb(199 196 196 / 40%);
+        }
+
+        .boxRight {
+          .iconCheck {
+            margin: 0;
+            margin-right: 10px;
+          }
+
+          .contentInner {
+            display: flex;
+            flex-direction: column;
+
+            .textItem {
+              margin: 0;
+            }
+
+            .timeDealine {
+              font-size: 14px;
+            }
+          }
+        }
+
+        .listAvatar {
+          .itemAvatar {
+            .imgAvatar {
+              width: 26px;
+              height: 26px;
+              border-radius: 50%;
+              object-fit: cover;
+            }
+          }
+        }
+      }
+    }
+  }
+}

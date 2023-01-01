@@ -28,6 +28,16 @@ const TaskService = {
       console.log(error.message);
     }
   },
+
+  async getTaskWithIdworkAndStatus(idWork, status) {
+    try {
+      const dataRef = await axios.get(`${mainUrl}/${idWork}/${status}`);
+
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
 };
 
 export { TaskService, isPending };
