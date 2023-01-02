@@ -1,7 +1,7 @@
 <template>
-  <div class="main main-visible mainContentTodoCustom">
+  <div class="main main-visible mainContentTodoCustom" v-if="inforWork">
     <div class="mb-5 d-flex justify-content-between align-items-center">
-      <h2>{{ inforWork.name }}</h2>
+      <h2>{{ inforWork.name || "Công việc" }}</h2>
       <button class="btnAddTag" @click="onShowHandleTask(null, 'add')">
         Thêm thẻ
       </button>
@@ -125,8 +125,40 @@ export default {
     onClickItem(task) {
       this.clicks++;
       if (this.clicks === 1) {
-        this.timer = setTimeout(() => {
-          console.log("Click 1 lan");
+        this.timer = setTimeout(async () => {
+          try {
+            let checkCompleted;
+
+            if (task.completed) {
+              checkCompleted = false;
+              const indexTask = this.taskTrue.indexOf(task);
+              if (indexTask > -1) {
+                this.taskTrue.splice(indexTask, 1);
+              }
+            } else {
+              checkCompleted = true;
+              const indexTask = this.taskFalse.indexOf(task);
+              if (indexTask > -1) {
+                this.taskFalse.splice(indexTask, 1);
+              }
+            }
+
+            const dataRef = await TaskService.updateCompletedTask(
+              task._id,
+              checkCompleted
+            );
+
+            if (dataRef.status) {
+              if (dataRef.data.completed) {
+                this.taskTrue.push(dataRef.data);
+              } else {
+                this.taskFalse.push(dataRef.data);
+              }
+            }
+          } catch (error) {
+            console.log(error);
+          }
+
           this.clicks = 0;
         }, this.delay);
       } else {
@@ -156,10 +188,7 @@ export default {
           if (dataRef.status) {
             let indexOld = null;
 
-            console.log(dataRef.data);
-
             if (dataRef.data.completed) {
-              console.log("vao true");
               indexOld = this.taskTrue.findIndex(
                 (task) => task._id == dataRef.data.idTask
               );
@@ -221,6 +250,7 @@ export default {
           TaskService.getTaskWithIdworkAndStatus(idWork, false),
         ])
           .then(([taskTrue, taskFalse]) => {
+            // console.log(taskTrue, taskFalse);
             this.taskTrue = taskTrue.data;
             this.taskFalse = taskFalse.data;
           })

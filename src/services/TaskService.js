@@ -31,7 +31,7 @@ const TaskService = {
 
   async getTaskWithIdworkAndStatus(idWork, status) {
     try {
-      const dataRef = await axios.get(`${mainUrl}/${idWork}/${status}`);
+      const dataRef = await axios.get(`${mainUrl}/one/${idWork}/${status}`);
 
       return dataRef.data;
     } catch (error) {
@@ -54,6 +54,18 @@ const TaskService = {
       const dataRef = await axios.put(
         `${mainUrl}/update/${updateTask.idTask}`,
         updateTask
+      );
+
+      return dataRef.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+  },
+
+  async updateCompletedTask(idTask, completed) {
+    try {
+      const dataRef = await axios.get(
+        `${mainUrl}/confirm/${idTask}/${completed}`
       );
 
       return dataRef.data;

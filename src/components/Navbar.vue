@@ -55,7 +55,7 @@
       </li>
 
       <!-- Notification -->
-      <li class="nav-item mt-xl-9">
+      <!-- <li class="nav-item mt-xl-9">
         <router-link
           class="nav-link position-relative p-0 py-xl-3"
           to="/thong-bao"
@@ -67,7 +67,7 @@
             v-if="$route.name == 'notifi-page'"
           ></div>
         </router-link>
-      </li>
+      </li> -->
 
       <!-- Todo List -->
       <li class="nav-item mt-xl-9">
