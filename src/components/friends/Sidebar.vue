@@ -108,7 +108,7 @@
               </button>
 
               <!-- Button -->
-              <button
+              <!-- <button
                 type="button"
                 class="btn btn-lg btn-block btn-secondary d-flex align-items-center mb-6"
                 :class="{ active: chooseTab == 'group' }"
@@ -116,7 +116,7 @@
               >
                 Danh sách nhóm
                 <i class="fe-users ml-auto"></i>
-              </button>
+              </button> -->
 
               <!-- Friends -->
               <nav class="mb-n6" v-if="listFriends">

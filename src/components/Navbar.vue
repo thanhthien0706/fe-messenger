@@ -54,23 +54,8 @@
         </router-link>
       </li>
 
-      <!-- Notification -->
-      <!-- <li class="nav-item mt-xl-9">
-        <router-link
-          class="nav-link position-relative p-0 py-xl-3"
-          to="/thong-bao"
-          :class="{ active: $route.name == 'notifi-page' }"
-        >
-          <i class="icon-lg fe-bell"></i>
-          <div
-            class="badge badge-dot badge-primary badge-bottom-center"
-            v-if="$route.name == 'notifi-page'"
-          ></div>
-        </router-link>
-      </li> -->
-
       <!-- Todo List -->
-      <li class="nav-item mt-xl-9">
+      <li class="nav-item mt-xl-9 d-xl-block flex-xl-grow-1">
         <router-link
           class="nav-link position-relative p-0 py-xl-3"
           to="/cong-viec"
@@ -83,37 +68,6 @@
           ></div>
         </router-link>
       </li>
-
-      <!-- Profile -->
-      <li
-        class="nav-item mt-xl-9 d-none d-xl-block flex-xl-grow-1"
-        @click="changeShowNav(2)"
-      >
-        <router-link
-          class="nav-link position-relative p-0 py-xl-3"
-          to="/nguoi-dung"
-          :class="{ active: $route.name == 'friends-page' }"
-        >
-          <i class="icon-lg fe-user"></i>
-          <div
-            class="badge badge-dot badge-primary badge-bottom-center"
-            v-if="$route.name == 'friends-page'"
-          ></div>
-        </router-link>
-      </li>
-
-      <!-- Demo only: Documentation -->
-      <!-- <li class="nav-item mt-xl-9 d-none d-xl-block flex-xl-grow-1">
-        <a
-          class="nav-link position-relative p-0 py-xl-3"
-          data-toggle="tab"
-          href="#tab-content-demos"
-          title="Demos"
-          role="tab"
-        >
-          <i class="icon-lg fe-layers"></i>
-        </a>
-      </li> -->
 
       <!-- Settings -->
       <li class="nav-item mt-xl-9">

@@ -51,6 +51,7 @@
         <div class="chat-content px-lg-8">
           <div class="container-xxl py-6F py-lg-6">
             <MainContentAddfriendVue v-if="nameTabChoose == 'list'" />
+            <MainContentGroupVue v-else />
           </div>
         </div>
         <!-- Chat: Content -->
@@ -62,10 +63,11 @@
 
 <script>
 import MainContentAddfriendVue from "./MainContentAddfriend.vue";
+import MainContentGroupVue from "./MainContentGroup.vue";
 
 export default {
   name: "MainContentFriends",
-  components: { MainContentAddfriendVue },
+  components: { MainContentAddfriendVue, MainContentGroupVue },
   props: ["nameTabChoose"],
 };
 </script>

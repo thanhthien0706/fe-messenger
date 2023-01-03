@@ -15,11 +15,16 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 80%;
-    height: 80%;
+    width: 1200px;
+    height: 600px;
     background-color: #fff;
     overflow: hidden;
     border-radius: 20px;
+
+    .boxVideoCall {
+      width: 100%;
+      height: 100%;
+    }
 
     .streamFriend {
       width: 100%;
@@ -98,8 +103,8 @@
   <div class="CallvideoShow" v-if="statueShow">
     <div class="innerContent">
       <div class="boxVideoCall">
-        <video class="streamFriend" id="streamFriend" controls autoplay></video>
-        <video class="streamMe" id="streamMe" controls autoplay></video>
+        <video class="streamFriend" id="streamFriend"></video>
+        <video class="streamMe" id="streamMe"></video>
       </div>
 
       <div class="boxBtnHandler">

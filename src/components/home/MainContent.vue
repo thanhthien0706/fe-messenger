@@ -243,6 +243,21 @@
                               </div>
                             </div>
 
+                            <div v-if="item.type == 'FILE'">
+                              <a
+                                :href="item.attachment"
+                                target="_blank"
+                                download
+                                style="
+                                  color: unset;
+                                  text-decoration: none;
+                                  display: block;
+                                "
+                              >
+                                <p>{{ getFileName(item.attachment) }}</p>
+                              </a>
+                            </div>
+
                             <div class="mt-1">
                               <small class="opacity-65">{{
                                 formatDateBasic(item.createdAt, "dd-MM-yyyy")
@@ -485,6 +500,7 @@ export default {
         conversation: null,
         attachment: null,
         sender: null,
+        fileName: null,
       },
       dataFriendSearch: null,
       statueShow: false,
@@ -510,6 +526,12 @@ export default {
     );
   },
   methods: {
+    getFileName(attachment) {
+      const fileName = attachment.split("http://localhost:3000/files/")[1];
+
+      return fileName;
+    },
+
     sendCloseCall(event) {
       this.statueShow = event;
     },
@@ -568,7 +590,25 @@ export default {
     onChangFile(event) {
       this.fileUpload = event.target.files[0];
       this.dataMess.attachment = event.target.files[0];
-      this.sendMessage("IMAGE");
+      console.log(event.target.files[0]);
+      if (
+        ["image/png", "image/jpeg", "image/jpg", "image/svg"].includes(
+          this.fileUpload.type
+        )
+      ) {
+        console.log("vao send image");
+        this.sendMessage("IMAGE");
+      } else if (
+        [
+          "application/pdf",
+          "application/msword",
+          "text/plain",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ].includes(this.fileUpload.type)
+      ) {
+        this.dataMess.fileName = this.fileUpload.name;
+        this.sendMessage("FILE");
+      }
     },
     getInforFriend(item) {
       let src = "";
@@ -625,7 +665,8 @@ export default {
       this.sockets.subscribe(
         `serverGroupChat:sendMess-${this.dataGroup._id}`,
         function (data) {
-          console.log("Nhan tin nhan");
+          // console.log(data);
+          // console.log("Nhan tin nhan");
           this.dataMessage.push(data);
         }
       );
