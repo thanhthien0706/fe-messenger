@@ -30,9 +30,30 @@ export default {
       inforCaller: null,
     };
   },
+  sockets: {
+    connect() {
+      this.$socket.emit("client:updateStateUser", {
+        id: this.$store.state.inforMe._id,
+        status: true,
+      });
+    },
+    disconnect() {},
+    "server:changeState"() {
+      this.$store.dispatch("findListGroupChats");
+    },
+  },
   created() {
     this.mainInit();
   },
+  beforeMount() {
+    window.addEventListener("beforeunload", () => {
+      this.$socket.emit("client:updateStateUser", {
+        id: this.$store.state.inforMe._id,
+        status: false,
+      });
+    });
+  },
+  beforeUnmount() {},
   methods: {
     async mainInit() {
       await this.initDataMe();
@@ -40,6 +61,10 @@ export default {
       await this.initListGroupChats();
       if (this.$store.state.inforMe) {
         await this.onConnectPeer();
+        this.$socket.emit("client:updateStateUser", {
+          id: this.$store.state.inforMe._id,
+          status: true,
+        });
       }
     },
     async initDataMe() {

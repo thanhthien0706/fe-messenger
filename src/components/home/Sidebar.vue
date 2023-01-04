@@ -41,7 +41,14 @@
                   <div class="card card-active-listener">
                     <div class="card-body">
                       <div class="media align-items-center">
-                        <div class="avatar mr-5">
+                        <div
+                          class="avatar avatar-sm mr-5"
+                          :class="
+                            getInforFriend(item).activity == true
+                              ? 'avatar-online'
+                              : 'avatar-offline'
+                          "
+                        >
                           <img
                             class="avatar-img"
                             :src="getInforFriend(item).src"
@@ -136,10 +143,19 @@ export default {
   },
 
   methods: {
+    getStatusActivity(idUser) {
+      if (idUser) {
+        return this.listFriends.filter((friend) => friend._id == idUser)[0];
+      }
+
+      return { activity: false };
+    },
+
     getInforFriend(item) {
       let src = "";
       let name = "";
       let idUser = "";
+      let activity = null;
 
       if (item.typeConversation == "single") {
         const friend = item.dataMembers.filter(
@@ -149,6 +165,8 @@ export default {
         src = friend.avatar;
         name = friend.local.fullname;
         idUser = friend._id;
+
+        activity = friend.activity;
       } else {
         src = item.avatar;
         name = item.nameGroup
@@ -156,7 +174,7 @@ export default {
           : this.getNameMember(item.dataMembers);
       }
 
-      return { src, name, idUser };
+      return { src, name, idUser, activity };
     },
 
     getNameMember(dataMembers) {
@@ -199,7 +217,13 @@ export default {
   computed: {
     ...mapGetters({
       listGroupChats: "getListGroupChats",
+      listFriends: "getListFriends",
     }),
+  },
+  watch: {
+    listGroupChats() {
+      console.log("Du lieu thay doi");
+    },
   },
 };
 </script>
