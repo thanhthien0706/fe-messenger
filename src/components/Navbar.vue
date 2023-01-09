@@ -71,14 +71,17 @@
 
       <!-- Settings -->
       <li class="nav-item mt-xl-9">
-        <router-link
+        <a
           class="nav-link position-relative p-0 py-xl-3"
-          href="settings.html"
           title="Settings"
-          to="/thiet-lap"
+          @click="onSignOut"
         >
-          <i class="icon-lg fe-settings"></i>
-        </router-link>
+          <fa
+            :icon="['fas', 'right-from-bracket']"
+            class="iconHandle"
+            style="cursor: pointer"
+          />
+        </a>
       </li>
     </ul>
     <!-- Menu -->
@@ -87,6 +90,7 @@
 </template>
 
 <script>
+import { AuthenService } from "@/services/AuthenService";
 export default {
   name: "NavbarComponent",
   data() {
@@ -97,6 +101,10 @@ export default {
   methods: {
     changeShowNav(index) {
       this.indexNav = index;
+    },
+    onSignOut() {
+      AuthenService.logoutAccount;
+      this.$router.push("/dang-nhap");
     },
   },
 };

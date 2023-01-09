@@ -183,6 +183,21 @@
                               </div>
                             </div>
 
+                            <div v-if="item.type == 'FILE'">
+                              <a
+                                :href="item.attachment"
+                                target="_blank"
+                                download
+                                style="
+                                  color: unset;
+                                  text-decoration: none;
+                                  display: block;
+                                "
+                              >
+                                <p>{{ getFileName(item.attachment) }}</p>
+                              </a>
+                            </div>
+
                             <div class="mt-1">
                               <small class="opacity-65">{{
                                 formatDateBasic(item.createdAt, "dd-MM-yyyy")
